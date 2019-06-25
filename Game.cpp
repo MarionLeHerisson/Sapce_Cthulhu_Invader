@@ -25,13 +25,15 @@ Game::Game()
 	mWindow.setFramerateLimit(160);
 
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
+	_TextureBubbleGreen.loadFromFile("Media/Assets/bubble-green.png");
+	_TextureBubbleBlue.loadFromFile("Media/Assets/bubble-blue.png");
 	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
 	_TextureLookingDown.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 0, 64, 64));
 	_TextureLookingRight.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 128, 64, 192));
 	_TextureLookingLeft.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 64, 64, 128));
+
 	_TextureWeapon.loadFromFile("Media/Textures/SI_WeaponGreen.png");
 	_TextureWeaponEnemy.loadFromFile("Media/Textures/SI_WeaponYellow.png");
-	//mTexture.loadFromFile("Media/Textures/SI_Player.png");
 	_TextureEnemy.loadFromFile("Media/Textures/SI_Enemy.png");
 	_TextureBlock.loadFromFile("Media/Textures/SI_Block.png");
 	mFont.loadFromFile("Media/Sansation.ttf");
@@ -174,15 +176,27 @@ void Game::update(sf::Time elapsedTime)
 	if (mIsLookingUp) {
 		mPlayer.setTexture(_TextureLookingUp);
 	}
-	if (mIsLookingDown)
+	else if (mIsLookingDown) {
 		mPlayer.setTexture(_TextureLookingDown);
-	if (mIsLookingLeft)
+	}
+	else if (mIsLookingLeft) {
 		mPlayer.setTexture(_TextureLookingLeft);
-	if (mIsLookingRight) {
+	}
+	else if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
 	}
 
-	// TODO
+	if (mIsAttacking) {
+		// envoi attaque dans direction du regard
+	}
+	else if (mIsEating) {
+		// si nourriture dans direction regard
+		// si poisson : vie ++
+		// si bébé : power ++
+	}
+	else if (mIsBlocking) {
+		// si attaque dans direction regard : annule attaque
+	}
 
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
@@ -740,12 +754,12 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		}
 
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
-		sw->m_sprite.setTexture(_TextureFish);
+		sw->m_sprite.setTexture(_TextureBubbleGreen);
 		sw->m_sprite.setPosition(
 			EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
 			EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
 		sw->m_type = EntityType::weapon;
-		sw->m_size = _TextureFish.getSize();
+		sw->m_size = _TextureBubbleGreen.getSize();
 		EntityManager::m_Entities.push_back(sw);
 
 		_IsPlayerWeaponFired = true;
