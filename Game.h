@@ -46,7 +46,6 @@ private:
 	static const sf::Time	TimePerFrame;
 
 	sf::RenderWindow		mWindow;
-	sf::Texture	mTexture;
 	sf::Sprite	mPlayer;
 	sf::Font	mFont;
 	sf::Text	mStatisticsText;
@@ -74,7 +73,8 @@ private:
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
-
+	sf::Texture	_TextureFish;
+	
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];
 	//sf::Sprite	_Enemy2;
@@ -83,7 +83,6 @@ private:
 	sf::Texture	_TextureBlock;
 	sf::Sprite	_Block[BLOCK_COUNT];
 	sf::Texture	_TextureWeapon;
-	sf::Texture	_TextureFish;
 	sf::Texture	_TextureWeaponEnemy;
 	sf::Texture	_TextureWeaponEnemyMaster;
 	sf::Sprite	_Weapon;
