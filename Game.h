@@ -23,11 +23,6 @@ private:
 
 	void updateStatistics(sf::Time elapsedTime);
 	void HandleTexts();
-	void HandleCollisionEnemyMasterWeaponPlayer();
-	void HanldeEnemyMasterWeaponMoves();
-	void HandleEnemyMasterWeaponFiring();
-	void HandleCollisionEnemyMasterWeaponBlock();
-	void HandleEnemyMasterMove();
 	void HandleCollisionEnemyWeaponBlock();
 	void HandleCollisionWeaponPlayer();
 	void HanldeEnemyWeaponMoves();
@@ -37,7 +32,6 @@ private:
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
-	void HandleCollisionWeaponEnemyMaster();
 	void HandleGameOver();
 	void DisplayGameOver();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
@@ -82,12 +76,22 @@ private:
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
 	bool _IsPlayerWeaponFired = false;
-	bool _IsEnemyMasterWeaponFired = false;
+	bool _PlayerWeaponFiredToTop = false;
+	bool _PlayerWeaponFiredToBottom = false;
+	bool _PlayerWeaponFiredToRight = false;
+	bool _PlayerWeaponFiredToleft = false;
+	bool _IsPlayerTentacleFired = false;
+	bool _PlayerTentacleFiredToTop = false;
+	bool _PlayerTentacleFiredToBottom = false;
+	bool _PlayerTentacleFiredToRight = false;
+	bool _PlayerTentacleFiredToleft = false;
 
 	sf::Texture _TextureLookingUp;
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
+	sf::Texture	_TextureBubbleGreen;
+	sf::Texture	_TextureBubbleRed;
 	sf::Texture	_TextureFish;
 
 	sf::Texture	_TextureEnemy;
