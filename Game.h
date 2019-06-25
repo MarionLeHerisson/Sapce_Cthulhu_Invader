@@ -63,6 +63,9 @@ private:
 	bool mIsLookingDown;
 	bool mIsLookingRight;
 	bool mIsLookingLeft;
+	bool mIsAttacking;
+	bool mIsEating;
+	bool mIsBlocking;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;

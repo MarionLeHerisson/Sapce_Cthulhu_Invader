@@ -18,6 +18,9 @@ Game::Game()
 	, mIsLookingDown(false)
 	, mIsLookingRight(false)
 	, mIsLookingLeft(false)
+	, mIsAttacking(false)
+	, mIsEating(false)
+	, mIsBlocking(false)
 {
 	mWindow.setFramerateLimit(160);
 
@@ -210,6 +213,8 @@ void Game::update(sf::Time elapsedTime)
 	else if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
 	}
+
+	// TODO
 		
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
@@ -726,14 +731,27 @@ void Game::DisplayGameOver()
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
-	if (key == sf::Keyboard::Up)
+	if (key == sf::Keyboard::Up) {
 		mIsLookingUp = isPressed;
-	else if (key == sf::Keyboard::Down)
+	}
+	else if (key == sf::Keyboard::Down) {
 		mIsLookingDown = isPressed;
-	else if (key == sf::Keyboard::Left)
+	}
+	else if (key == sf::Keyboard::Left) {
 		mIsLookingLeft = isPressed;
-	else if (key == sf::Keyboard::Right)
+	}
+	else if (key == sf::Keyboard::Right) {
 		mIsLookingRight = isPressed;
+	}
+	else if (key == sf::Keyboard::A) {
+		mIsAttacking = isPressed;
+	}
+	else if (key == sf::Keyboard::Z) {
+		mIsEating = isPressed;
+	}
+	else if (key == sf::Keyboard::E) {
+		mIsBlocking = isPressed;
+	}
 
 	if (key == sf::Keyboard::Space)
 	{
