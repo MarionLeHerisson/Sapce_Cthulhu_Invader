@@ -8,7 +8,7 @@ const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
 	: mWindow(sf::VideoMode(840, 600), "Space Invaders 1978", sf::Style::Close)
-	, mTexture()
+	//, mTexture()
 	, mPlayer()
 	, mFont()
 	, mStatisticsText()
@@ -21,16 +21,16 @@ Game::Game()
 {
 	mWindow.setFramerateLimit(160);
 
-	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingUp.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingDown.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingRight.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingLeft.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
+	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
+	_TextureLookingDown.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 0, 64, 64));
+	_TextureLookingRight.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 128, 64, 192));
+	_TextureLookingLeft.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 64, 64, 128));
 
 	_TextureWeapon.loadFromFile("Media/Textures/SI_WeaponGreen.png");
 	_TextureWeaponEnemy.loadFromFile("Media/Textures/SI_WeaponYellow.png");
 	_TextureWeaponEnemyMaster.loadFromFile("Media/Textures/SI_WeaponRed.png");
-	mTexture.loadFromFile("Media/Textures/SI_Player.png");
+	//mTexture.loadFromFile("Media/Textures/SI_Player.png");
 	_TextureEnemyMaster.loadFromFile("Media/Textures/SI_EnemyMaster.png");
 	_TextureEnemy.loadFromFile("Media/Textures/SI_Enemy.png");
 	_TextureBlock.loadFromFile("Media/Textures/SI_Block.png");
@@ -65,12 +65,12 @@ void Game::InitSprites()
 	// Player
 	//
 
-	mPlayer.setTexture(mTexture);
+	mPlayer.setTexture(_TextureLookingDown);
 	mPlayer.setPosition(100.f, 500.f);
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
 	player->m_type = EntityType::player;
-	player->m_size = mTexture.getSize();
+	player->m_size = _TextureLookingDown.getSize();
 	player->m_position = mPlayer.getPosition();
 	EntityManager::m_Entities.push_back(player);
 
@@ -197,19 +197,23 @@ void Game::update(sf::Time elapsedTime)
 	sf::Vector2f movement(0.f, 0.f);
 	if (mIsLookingUp) {
 		mPlayer.setTexture(_TextureLookingUp);
-		std::shared_ptr<Entity> player = std::make_shared<Entity>();
-		player->m_sprite = mPlayer;
-		player->m_type = EntityType::player;
-		player->m_size = mTexture.getSize();
-		player->m_position = mPlayer.getPosition();
-		EntityManager::m_Entities.push_back(player);
 	}
-	if (mIsLookingDown)
+	else if (mIsLookingDown) {
 		mPlayer.setTexture(_TextureLookingDown);
-	if (mIsLookingLeft)
+	}
+	else if (mIsLookingLeft) {
 		mPlayer.setTexture(_TextureLookingLeft);
-	if (mIsLookingRight)
+	}
+	else if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
+	}
+		
+	std::shared_ptr<Entity> player = std::make_shared<Entity>();
+	player->m_sprite = mPlayer;
+	player->m_type = EntityType::player;
+	player->m_size = _TextureLookingUp.getSize();
+	player->m_position = mPlayer.getPosition();
+	EntityManager::m_Entities.push_back(player);
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
