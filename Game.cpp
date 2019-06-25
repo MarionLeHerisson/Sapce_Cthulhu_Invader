@@ -44,7 +44,6 @@ void Game::ResetSprites()
 	_IsGameOver = false;
 	_IsEnemyWeaponFired = false;
 	_IsPlayerWeaponFired = false;
-	_IsEnemyMasterWeaponFired = false;
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -55,18 +54,18 @@ void Game::ResetSprites()
 void Game::InitSprites()
 {
 	_lives = 3;
+	_power = 0;
 	_score = 0;
 	_IsGameOver = false;
 	_IsEnemyWeaponFired = false;
 	_IsPlayerWeaponFired = false;
-	_IsEnemyMasterWeaponFired = false;
 
 	//
 	// Player
 	//
 
 	mPlayer.setTexture(_TextureLookingDown);
-	mPlayer.setPosition(100.f, 500.f);
+	mPlayer.setPosition(400.f, 300.f);//set to the middle of the screen
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
 	player->m_type = EntityType::player;
@@ -77,52 +76,46 @@ void Game::InitSprites()
 	//
 	// Enemy Master
 	//
-
-	_EnemyMaster.setTexture(_TextureEnemyMaster);
-	_EnemyMaster.setPosition(100.f + 50.f, 1.f);
+	/*
 	std::shared_ptr<Entity> sem = std::make_shared<Entity>();
-	sem->m_sprite = _EnemyMaster;
-	sem->m_type = EntityType::enemyMaster;
-	sem->m_size = _TextureEnemyMaster.getSize();
-	sem->m_position = _EnemyMaster.getPosition();
-	EntityManager::m_Entities.push_back(sem);
+	EntityManager::m_Entities.push_back(sem);*/
 
 	//
 	// Enemies
 	//
 
-	for (int i = 0; i < SPRITE_COUNT_X; i++)
-	{
-		for (int j = 0; j < SPRITE_COUNT_Y; j++)
-		{
-			_Enemy[i][j].setTexture(_TextureEnemy);
-			_Enemy[i][j].setPosition(100.f + 50.f * (i + 1), 10.f + 50.f * (j + 1));
+	//for (int i = 0; i < SPRITE_COUNT_X; i++)
+	//{
+	//	for (int j = 0; j < SPRITE_COUNT_Y; j++)
+	//	{
+	//		_Enemy[i][j].setTexture(_TextureEnemy);
+	//		_Enemy[i][j].setPosition(100.f + 50.f * (i + 1), 10.f + 50.f * (j + 1));
 
-			std::shared_ptr<Entity> se = std::make_shared<Entity>();
-			se->m_sprite = _Enemy[i][j];
-			se->m_type = EntityType::enemy;
-			se->m_size = _TextureEnemy.getSize();
-			se->m_position = _Enemy[i][j].getPosition();
-			EntityManager::m_Entities.push_back(se);
-		}
-	}
+	//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+	//		se->m_sprite = _Enemy[i][j];
+	//		se->m_type = EntityType::enemy;
+	//		se->m_size = _TextureEnemy.getSize();
+	//		se->m_position = _Enemy[i][j].getPosition();
+	//		EntityManager::m_Entities.push_back(se);
+	//	}
+	//}
 
 	//
 	// Blocks
 	//
 
-	for (int i = 0; i < BLOCK_COUNT; i++)
-	{
-		_Block[i].setTexture(_TextureBlock);
-		_Block[i].setPosition(0.f + 150.f * (i + 1), 10 + 350.f);
+	//for (int i = 0; i < BLOCK_COUNT; i++)
+	//{
+	//	_Block[i].setTexture(_TextureBlock);
+	//	_Block[i].setPosition(0.f + 150.f * (i + 1), 10 + 350.f);
 
-		std::shared_ptr<Entity> sb = std::make_shared<Entity>();
-		sb->m_sprite = _Block[i];
-		sb->m_type = EntityType::block;
-		sb->m_size = _TextureBlock.getSize();
-		sb->m_position = _Block[i].getPosition();
-		EntityManager::m_Entities.push_back(sb);
-	}
+	//	std::shared_ptr<Entity> sb = std::make_shared<Entity>();
+	//	sb->m_sprite = _Block[i];
+	//	sb->m_type = EntityType::block;
+	//	sb->m_size = _TextureBlock.getSize();
+	//	sb->m_position = _Block[i].getPosition();
+	//	EntityManager::m_Entities.push_back(sb);
+	//}
 
 	mStatisticsText.setFont(mFont);
 	mStatisticsText.setPosition(5.f, 5.f);
@@ -137,6 +130,16 @@ void Game::InitSprites()
 	_LivesText.setPosition(10.f, 50.f);
 	_LivesText.setCharacterSize(20);
 	_LivesText.setString(std::to_string(_lives));
+
+	//
+	// Power
+	//
+
+	_PowerText.setFillColor(sf::Color::Green);
+	_PowerText.setFont(mFont);
+	_PowerText.setPosition(10.f, 60.f);
+	_PowerText.setCharacterSize(20);
+	_PowerText.setString(std::to_string(_power));
 
 	//
 	// Text
@@ -282,17 +285,11 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		HandleCollisionWeaponPlayer();
 		HandleCollisionWeaponBlock();
 		HandleCollisionEnemyWeaponBlock();
-		HandleCollisionEnemyMasterWeaponBlock();
-		HandleCollisionEnemyMasterWeaponPlayer();
 		HandleCollisionBlockEnemy();
-		HandleCollisionWeaponEnemyMaster();
 		HanldeWeaponMoves();
 		HanldeEnemyWeaponMoves();
-		HanldeEnemyMasterWeaponMoves();
 		HandleEnemyMoves();
-		HandleEnemyMasterMove();
 		HandleEnemyWeaponFiring();
-		HandleEnemyMasterWeaponFiring();
 	}
 }
 
@@ -303,191 +300,6 @@ void Game::HandleTexts()
 	std::string score = "Score: " + std::to_string(_score);
 	_ScoreText.setString(score);
 	return;
-}
-
-void Game::HandleCollisionEnemyMasterWeaponPlayer()
-{
-	for (std::shared_ptr<Entity> weapon : EntityManager::m_Entities)
-	{
-		if (weapon->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (weapon->m_type != EntityType::enemyMasterWeapon)
-		{
-			continue;
-		}
-
-		sf::FloatRect boundWeapon;
-		boundWeapon = weapon->m_sprite.getGlobalBounds();
-
-		sf::FloatRect boundPlayer;
-		boundPlayer = EntityManager::GetPlayer()->m_sprite.getGlobalBounds();
-
-		if (boundWeapon.intersects(boundPlayer) == true)
-		{
-			weapon->m_enabled = false;
-			_IsEnemyMasterWeaponFired = false; 
-			_lives--;
-			//break;
-			goto end;
-		}
-	}
-
-end:
-	//nop
-	return;
-}
-
-void Game::HanldeEnemyMasterWeaponMoves()
-{
-	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
-	{
-		if (entity->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (entity->m_type != EntityType::enemyMasterWeapon)
-		{
-			continue;
-		}
-
-		float x, y;
-		x = entity->m_sprite.getPosition().x;
-		y = entity->m_sprite.getPosition().y;
-		y++;
-
-		if (y >= 600)
-		{
-			entity->m_enabled = false;
-			_IsEnemyMasterWeaponFired = false;
-		}
-
-		entity->m_sprite.setPosition(x, y);
-	}
-}
-
-void Game::HandleEnemyMasterWeaponFiring()
-{
-	if (_IsEnemyMasterWeaponFired == true)
-		return;
-
-	if (EntityManager::GetEnemyMaster()->m_enabled == false)
-		return;
-
-	// a little random...
-	int r = rand() % 50;
-	if (r != 10)
-		return;
-
-	float x, y;
-	x = EntityManager::GetEnemyMaster()->m_sprite.getPosition().x;
-	y = EntityManager::GetEnemyMaster()->m_sprite.getPosition().y;
-	y--;
-
-	std::shared_ptr<Entity> sw = std::make_shared<Entity>();
-	sw->m_sprite.setTexture(_TextureWeaponEnemyMaster);
-
-	sw->m_sprite.setPosition(
-		x + _TextureEnemyMaster.getSize().x / 2,
-		y + _TextureEnemyMaster.getSize().y);
-	sw->m_type = EntityType::enemyMasterWeapon;
-	sw->m_size = _TextureWeaponEnemyMaster.getSize();
-	EntityManager::m_Entities.push_back(sw);
-
-	_IsEnemyMasterWeaponFired = true;
-}
-
-void Game::HandleCollisionEnemyMasterWeaponBlock()
-{
-	for (std::shared_ptr<Entity> weapon : EntityManager::m_Entities)
-	{
-		if (weapon->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (weapon->m_type != EntityType::enemyMasterWeapon)
-		{
-			continue;
-		}
-
-		for (std::shared_ptr<Entity> block : EntityManager::m_Entities)
-		{
-			if (block->m_type != EntityType::block)
-			{
-				continue;
-			}
-
-			if (block->m_enabled == false)
-			{
-				continue;
-			}
-
-			sf::FloatRect boundWeapon;
-			boundWeapon = weapon->m_sprite.getGlobalBounds();
-
-			sf::FloatRect boundBlock;
-			boundBlock = block->m_sprite.getGlobalBounds();
-
-			if (boundWeapon.intersects(boundBlock) == true)
-			{
-				weapon->m_enabled = false;
-				_IsEnemyMasterWeaponFired = false;
-				//break;
-				goto end2;
-			}
-		}
-	}
-
-end2:
-	//nop
-	return;
-}
-
-void Game::HandleEnemyMasterMove()
-{
-	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
-	{
-		if (entity->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (entity->m_type != EntityType::enemyMaster)
-		{
-			continue;
-		}
-
-		float x, y;
-		x = entity->m_sprite.getPosition().x;
-		y = entity->m_sprite.getPosition().y;
-
-		if (entity->m_bLeftToRight == true)
-			x = x + 0.5f;
-		else
-			x = x - 0.5f;
-
-		entity->m_times++;
-
-		if (x >= ((BLOCK_COUNT) * 150) || x <= 150)
-		{
-			if (entity->m_bLeftToRight == true)
-			{
-				entity->m_bLeftToRight = false;
-				entity->m_times = 0;
-			}
-			else
-			{
-				entity->m_bLeftToRight = true;
-				entity->m_times = 0;
-			}
-		}
-
-		entity->m_sprite.setPosition(x, y);
-	}
 }
 
 void Game::HandleCollisionEnemyWeaponBlock()
@@ -878,59 +690,10 @@ end:
 	return;
 }
 
-void Game::HandleCollisionWeaponEnemyMaster()
-{
-	// Handle collision weapon master enemy
-
-	for (std::shared_ptr<Entity> weapon : EntityManager::m_Entities)
-	{
-		if (weapon->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (weapon->m_type != EntityType::weapon)
-		{
-			continue;
-		}
-
-		for (std::shared_ptr<Entity> enemy : EntityManager::m_Entities)
-		{
-			if (enemy->m_type != EntityType::enemyMaster)
-			{
-				continue;
-			}
-
-			if (enemy->m_enabled == false)
-			{
-				continue;
-			}
-
-			sf::FloatRect boundWeapon;
-			boundWeapon = weapon->m_sprite.getGlobalBounds();
-
-			sf::FloatRect boundEnemy;
-			boundEnemy = enemy->m_sprite.getGlobalBounds();
-
-			if (boundWeapon.intersects(boundEnemy) == true)
-			{
-				enemy->m_enabled = false;
-				weapon->m_enabled = false;
-				_IsPlayerWeaponFired = false;
-				_score += 100;
-				//break;
-				goto end;
-			}
-		}
-	}
-
-end:
-	//nop
-	return;
-}
-
 void Game::HandleGameOver()
 {
+
+
 	if (EntityManager::GetPlayer()->m_enabled == false)
 	{
 		DisplayGameOver();
@@ -964,7 +727,7 @@ void Game::DisplayGameOver()
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
 	if (key == sf::Keyboard::Up)
-		mIsLookingUp= isPressed;
+		mIsLookingUp = isPressed;
 	else if (key == sf::Keyboard::Down)
 		mIsLookingDown = isPressed;
 	else if (key == sf::Keyboard::Left)

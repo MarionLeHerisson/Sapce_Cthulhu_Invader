@@ -52,7 +52,9 @@ private:
 	sf::Time	mStatisticsUpdateTime;
 	sf::Text	mText;
 	sf::Text	_LivesText;
+	sf::Text	_PowerText;
 	int _lives = 3;
+	int _power = 0;
 	sf::Text	_ScoreText;
 	int _score = 0;
 
