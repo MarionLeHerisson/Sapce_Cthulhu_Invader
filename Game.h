@@ -58,16 +58,21 @@ private:
 	int _score = 0;
 
 	std::size_t	mStatisticsNumFrames;
-	bool mIsMovingUp;
-	bool mIsMovingDown;
-	bool mIsMovingRight;
-	bool mIsMovingLeft;
+	bool mIsLookingUp;
+	bool mIsLookingDown;
+	bool mIsLookingRight;
+	bool mIsLookingLeft;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
 	bool _IsPlayerWeaponFired = false;
 	bool _IsEnemyMasterWeaponFired = false;
 
+	sf::Texture _TextureLookingUp;
+	sf::Texture _TextureLookingDown;
+	sf::Texture _TextureLookingRight;
+	sf::Texture _TextureLookingLeft;
+	
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[SPRITE_COUNT_X][SPRITE_COUNT_Y];
 	sf::Texture	_TextureBlock;

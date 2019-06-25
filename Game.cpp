@@ -14,14 +14,19 @@ Game::Game()
 	, mStatisticsText()
 	, mStatisticsUpdateTime()
 	, mStatisticsNumFrames(0)
-	, mIsMovingUp(false)
-	, mIsMovingDown(false)
-	, mIsMovingRight(false)
-	, mIsMovingLeft(false)
+	, mIsLookingUp(false)
+	, mIsLookingDown(false)
+	, mIsLookingRight(false)
+	, mIsLookingLeft(false)
 {
 	mWindow.setFramerateLimit(160);
 
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingUp.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingDown.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingRight.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingLeft.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+
 	_TextureWeapon.loadFromFile("Media/Textures/SI_WeaponGreen.png");
 	_TextureWeaponEnemy.loadFromFile("Media/Textures/SI_WeaponYellow.png");
 	_TextureWeaponEnemyMaster.loadFromFile("Media/Textures/SI_WeaponRed.png");
@@ -190,14 +195,21 @@ void Game::processEvents()
 void Game::update(sf::Time elapsedTime)
 {
 	sf::Vector2f movement(0.f, 0.f);
-	if (mIsMovingUp)
-		movement.y -= PlayerSpeed;
-	if (mIsMovingDown)
-		movement.y += PlayerSpeed;
-	if (mIsMovingLeft)
-		movement.x -= PlayerSpeed;
-	if (mIsMovingRight)
-		movement.x += PlayerSpeed;
+	if (mIsLookingUp) {
+		mPlayer.setTexture(_TextureLookingUp);
+		std::shared_ptr<Entity> player = std::make_shared<Entity>();
+		player->m_sprite = mPlayer;
+		player->m_type = EntityType::player;
+		player->m_size = mTexture.getSize();
+		player->m_position = mPlayer.getPosition();
+		EntityManager::m_Entities.push_back(player);
+	}
+	if (mIsLookingDown)
+		mPlayer.setTexture(_TextureLookingDown);
+	if (mIsLookingLeft)
+		mPlayer.setTexture(_TextureLookingLeft);
+	if (mIsLookingRight)
+		mPlayer.setTexture(_TextureLookingRight);
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -915,25 +927,6 @@ end:
 
 void Game::HandleGameOver()
 {
-	// Game Over ?
-	int count = std::count_if(EntityManager::m_Entities.begin(), EntityManager::m_Entities.end(), [](std::shared_ptr<Entity> element) {
-		if (element->m_type == EntityType::enemy || element->m_type == EntityType::enemyMaster)
-		{
-			if (element->m_enabled == false)
-			{
-				return true;
-			}
-		}
-		return false;
-	});
-
-	// sprite counts + enemy master
-	//if (count >= (5))
-	if (count == ((SPRITE_COUNT_X * SPRITE_COUNT_Y) + 1))
-	{
-		DisplayGameOver();
-	}
-
 	if (EntityManager::GetPlayer()->m_enabled == false)
 	{
 		DisplayGameOver();
@@ -967,13 +960,13 @@ void Game::DisplayGameOver()
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
 	if (key == sf::Keyboard::Up)
-		mIsMovingUp = isPressed;
+		mIsLookingUp= isPressed;
 	else if (key == sf::Keyboard::Down)
-		mIsMovingDown = isPressed;
+		mIsLookingDown = isPressed;
 	else if (key == sf::Keyboard::Left)
-		mIsMovingLeft = isPressed;
+		mIsLookingLeft = isPressed;
 	else if (key == sf::Keyboard::Right)
-		mIsMovingRight = isPressed;
+		mIsLookingRight = isPressed;
 
 	if (key == sf::Keyboard::Space)
 	{
