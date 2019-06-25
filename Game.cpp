@@ -8,7 +8,7 @@ const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
 	: mWindow(sf::VideoMode(840, 600), "Space Invaders 1978", sf::Style::Close)
-	, mTexture()
+	//, mTexture()
 	, mPlayer()
 	, mFont()
 	, mStatisticsText()
@@ -18,19 +18,22 @@ Game::Game()
 	, mIsLookingDown(false)
 	, mIsLookingRight(false)
 	, mIsLookingLeft(false)
+	, mRightIsHere(false)
+	, mLeftIsHere(false)
+	, mUpIsHere(false)
+	, mDownIsHere(false)
 {
 	mWindow.setFramerateLimit(160);
 
-	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingUp.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingDown.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingRight.loadFromFile("Media/Assets/fish-angler-Sheet.png");
-	_TextureLookingLeft.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
+	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
+	_TextureLookingDown.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 0, 64, 64));
+	_TextureLookingRight.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 128, 64, 192));
+	_TextureLookingLeft.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 64, 64, 128));
 	_TextureWeapon.loadFromFile("Media/Textures/SI_WeaponGreen.png");
 	_TextureWeaponEnemy.loadFromFile("Media/Textures/SI_WeaponYellow.png");
-	mTexture.loadFromFile("Media/Textures/SI_Player.png");
 	_TextureEnemy.loadFromFile("Media/Textures/SI_Enemy.png");
-	_TextureBlock.loadFromFile("Media/Textures/SI_Block.png");
+	//mTexture.loadFromFile("Media/Textures/SI_Player.png");
 	mFont.loadFromFile("Media/Sansation.ttf");
 
 	InitSprites();
@@ -61,31 +64,16 @@ void Game::InitSprites()
 	// Player
 	//
 
-	mPlayer.setTexture(mTexture);
+	mPlayer.setTexture(_TextureLookingDown);
 	mPlayer.setPosition(400.f, 300.f);//set to the middle of the screen
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
-	player->m_type = EntityType::player;
-	player->m_size = mTexture.getSize();
+	mPlayer.setTexture(_TextureLookingDown);
+	player->m_size = _TextureLookingDown.getSize();
 	player->m_position = mPlayer.getPosition();
 	EntityManager::m_Entities.push_back(player);
 
-	//
-	// Enemies
-	//
 
-	//UP
-	posSpawnUp[1]=400;
-	posSpawnUp[2]=20;
-	//DOWN
-	posSpawnDown[1] = 400;
-	posSpawnDown[2] = 550;
-	//LEFT
-	posSpawnLeft[1] = 20;
-	posSpawnLeft[2] = 300;
-	//RIGHT
-	posSpawnRight[1] = 750;
-	posSpawnRight[2] = 300;
 
 	mStatisticsText.setFont(mFont);
 	mStatisticsText.setPosition(5.f, 5.f);
@@ -148,6 +136,7 @@ void Game::processEvents()
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 	{
+		SpawnEntities();
 		switch (event.type)
 		{
 		case sf::Event::KeyPressed:
@@ -170,19 +159,23 @@ void Game::update(sf::Time elapsedTime)
 	sf::Vector2f movement(0.f, 0.f);
 	if (mIsLookingUp) {
 		mPlayer.setTexture(_TextureLookingUp);
-		std::shared_ptr<Entity> player = std::make_shared<Entity>();
-		player->m_sprite = mPlayer;
-		player->m_type = EntityType::player;
-		player->m_size = mTexture.getSize();
-		player->m_position = mPlayer.getPosition();
-		EntityManager::m_Entities.push_back(player);
 	}
-	if (mIsLookingDown)
+	else if (mIsLookingDown) {
 		mPlayer.setTexture(_TextureLookingDown);
-	if (mIsLookingLeft)
+	}
+	else if (mIsLookingLeft) {
 		mPlayer.setTexture(_TextureLookingLeft);
-	if (mIsLookingRight)
+	}
+	else if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
+	}
+
+	std::shared_ptr<Entity> player = std::make_shared<Entity>();
+	player->m_sprite = mPlayer;
+	player->m_type = EntityType::player;
+	player->m_size = _TextureLookingUp.getSize();
+	player->m_position = mPlayer.getPosition();
+	EntityManager::m_Entities.push_back(player);
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -730,3 +723,102 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		_IsPlayerWeaponFired = true;
 	}
 }
+
+void Game::SpawnEntities()
+{
+	typeEnemy = rand() % 3;
+	
+	if (!mRightIsHere) {
+		typeEnemy = rand() % 3;
+		_Enemies[0].setTexture(_TextureFish);
+		_Enemies[0].setPosition(750.f, 300.f);
+		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+		switch (typeEnemy)
+		{
+		case '0':
+			se->m_type = EntityType::baby;
+			break;
+		case '1':
+			se->m_type = EntityType::fish;
+			break;
+		case '2':
+			se->m_type = EntityType::enemy;
+			break;
+		}
+		se->m_size = _TextureFish.getSize();
+		se->m_position = _Enemies[3].getPosition();
+		EntityManager::m_Entities.push_back(se);
+		mRightIsHere = true;
+	}
+	if (!mLeftIsHere) {
+		typeEnemy = rand() % 3;
+		_Enemies[1].setTexture(_TextureFish);
+		_Enemies[1].setPosition(20.f, 300.f);
+		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+		switch (typeEnemy)
+		{
+		case '0':
+			se->m_type = EntityType::baby;
+			break;
+		case '1':
+			se->m_type = EntityType::fish;
+			break;
+		case '2':
+			se->m_type = EntityType::enemy;
+			break;
+		}
+		se->m_size = _TextureFish.getSize();
+		se->m_position = _Enemies[3].getPosition();
+		EntityManager::m_Entities.push_back(se);
+		mLeftIsHere = true;
+	}
+	if (!mUpIsHere) {
+		typeEnemy = rand() % 3;
+		_Enemies[2].setTexture(_TextureFish);
+		_Enemies[2].setPosition(400.f, 20.f);
+		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+		switch (typeEnemy)
+		{
+		case '0':
+			se->m_type = EntityType::baby;
+			break;
+		case '1':
+			se->m_type = EntityType::fish;
+			break;
+		case '2':
+			se->m_type = EntityType::enemy;
+			break;
+		}
+		se->m_size = _TextureFish.getSize();
+		se->m_position = _Enemies[3].getPosition();
+		EntityManager::m_Entities.push_back(se);
+		mUpIsHere = true;
+	}
+	if (!mDownIsHere) {
+		typeEnemy = rand() % 3;
+		_Enemies[3].setTexture(_TextureFish);
+		_Enemies[3].setPosition(400.f, 550.f);
+		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+		switch (typeEnemy)
+		{
+		case '0':
+			se->m_type = EntityType::baby;
+			break;
+		case '1':
+			se->m_type = EntityType::fish;
+			break;
+		case '2':
+			se->m_type = EntityType::enemy;
+			break;
+		}
+		se->m_size = _TextureFish.getSize();
+		se->m_position = _Enemies[3].getPosition();
+		EntityManager::m_Entities.push_back(se);
+		mDownIsHere = true;
+	}
+
+	
+}
+
+
+

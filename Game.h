@@ -1,5 +1,6 @@
 #pragma once
 #include "Weapon.h"
+#include <iostream>
 
 #define SPRITE_COUNT_X 11
 #define SPRITE_COUNT_Y 5
@@ -40,13 +41,14 @@ private:
 	void HandleGameOver();
 	void DisplayGameOver();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	void SpawnEntities();
+
 
 private:
 	static const float		PlayerSpeed;
 	static const sf::Time	TimePerFrame;
 
 	sf::RenderWindow		mWindow;
-	sf::Texture	mTexture;
 	sf::Sprite	mPlayer;
 	sf::Font	mFont;
 	sf::Text	mStatisticsText;
@@ -62,12 +64,20 @@ private:
 	int posSpawnRight[2] ;
 	int posSpawnDown[2] ;
 	int posSpawnLeft[2] ;
+	int typeEnemy;
+	int isGenerated;
+	int posGenerate;
+	sf::Sprite	_Enemies[4];
 
 	std::size_t	mStatisticsNumFrames;
 	bool mIsLookingUp;
 	bool mIsLookingDown;
 	bool mIsLookingRight;
 	bool mIsLookingLeft;
+	bool mRightIsHere;
+	bool mLeftIsHere;
+	bool mUpIsHere;
+	bool mDownIsHere;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
@@ -78,13 +88,13 @@ private:
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
+	sf::Texture	_TextureFish;
 
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];
 	sf::Texture	_TextureBlock;
 	sf::Sprite	_Block[BLOCK_COUNT];
 	sf::Texture	_TextureWeapon;
-	sf::Texture	_TextureFish;
 	sf::Texture	_TextureWeaponEnemy;
 	sf::Texture	_TextureWeaponEnemyMaster;
 	sf::Sprite	_Weapon;

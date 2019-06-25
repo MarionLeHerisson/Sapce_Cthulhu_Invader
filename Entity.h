@@ -7,7 +7,8 @@ enum EntityType
 	enemyWeapon,
 	enemyMasterWeapon,
 	enemy,
-	enemyMaster,
+	baby,
+	fish,
 	block
 };
 
