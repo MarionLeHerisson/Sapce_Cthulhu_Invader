@@ -8,7 +8,7 @@ const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
 	: mWindow(sf::VideoMode(840, 600), "Space Invaders 1978", sf::Style::Close)
-	//, mTexture()
+	, mTexture()
 	, mPlayer()
 	, mFont()
 	, mStatisticsText()
@@ -24,17 +24,14 @@ Game::Game()
 {
 	mWindow.setFramerateLimit(160);
 
-	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
-	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
-	_TextureLookingDown.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 0, 64, 64));
-	_TextureLookingRight.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 128, 64, 192));
-	_TextureLookingLeft.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 64, 64, 128));
-
+	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingUp.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingDown.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingRight.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureLookingLeft.loadFromFile("Media/Assets/fish-angler-Sheet.png");
 	_TextureWeapon.loadFromFile("Media/Textures/SI_WeaponGreen.png");
 	_TextureWeaponEnemy.loadFromFile("Media/Textures/SI_WeaponYellow.png");
-	_TextureWeaponEnemyMaster.loadFromFile("Media/Textures/SI_WeaponRed.png");
-	//mTexture.loadFromFile("Media/Textures/SI_Player.png");
-	_TextureEnemyMaster.loadFromFile("Media/Textures/SI_EnemyMaster.png");
+	mTexture.loadFromFile("Media/Textures/SI_Player.png");
 	_TextureEnemy.loadFromFile("Media/Textures/SI_Enemy.png");
 	_TextureBlock.loadFromFile("Media/Textures/SI_Block.png");
 	mFont.loadFromFile("Media/Sansation.ttf");
@@ -67,58 +64,31 @@ void Game::InitSprites()
 	// Player
 	//
 
-	mPlayer.setTexture(_TextureLookingDown);
+	mPlayer.setTexture(mTexture);
 	mPlayer.setPosition(400.f, 300.f);//set to the middle of the screen
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
 	player->m_type = EntityType::player;
-	player->m_size = _TextureLookingDown.getSize();
+	player->m_size = mTexture.getSize();
 	player->m_position = mPlayer.getPosition();
 	EntityManager::m_Entities.push_back(player);
-
-	//
-	// Enemy Master
-	//
-	/*
-	std::shared_ptr<Entity> sem = std::make_shared<Entity>();
-	EntityManager::m_Entities.push_back(sem);*/
 
 	//
 	// Enemies
 	//
 
-	//for (int i = 0; i < SPRITE_COUNT_X; i++)
-	//{
-	//	for (int j = 0; j < SPRITE_COUNT_Y; j++)
-	//	{
-	//		_Enemy[i][j].setTexture(_TextureEnemy);
-	//		_Enemy[i][j].setPosition(100.f + 50.f * (i + 1), 10.f + 50.f * (j + 1));
-
-	//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
-	//		se->m_sprite = _Enemy[i][j];
-	//		se->m_type = EntityType::enemy;
-	//		se->m_size = _TextureEnemy.getSize();
-	//		se->m_position = _Enemy[i][j].getPosition();
-	//		EntityManager::m_Entities.push_back(se);
-	//	}
-	//}
-
-	//
-	// Blocks
-	//
-
-	//for (int i = 0; i < BLOCK_COUNT; i++)
-	//{
-	//	_Block[i].setTexture(_TextureBlock);
-	//	_Block[i].setPosition(0.f + 150.f * (i + 1), 10 + 350.f);
-
-	//	std::shared_ptr<Entity> sb = std::make_shared<Entity>();
-	//	sb->m_sprite = _Block[i];
-	//	sb->m_type = EntityType::block;
-	//	sb->m_size = _TextureBlock.getSize();
-	//	sb->m_position = _Block[i].getPosition();
-	//	EntityManager::m_Entities.push_back(sb);
-	//}
+	//UP
+	posSpawnUp[1]=400;
+	posSpawnUp[2]=20;
+	//DOWN
+	posSpawnDown[1] = 400;
+	posSpawnDown[2] = 550;
+	//LEFT
+	posSpawnLeft[1] = 20;
+	posSpawnLeft[2] = 300;
+	//RIGHT
+	posSpawnRight[1] = 750;
+	posSpawnRight[2] = 300;
 
 	mStatisticsText.setFont(mFont);
 	mStatisticsText.setPosition(5.f, 5.f);
@@ -140,7 +110,7 @@ void Game::InitSprites()
 
 	_PowerText.setFillColor(sf::Color::Green);
 	_PowerText.setFont(mFont);
-	_PowerText.setPosition(10.f, 60.f);
+	_PowerText.setPosition(10.f, 150.f);
 	_PowerText.setCharacterSize(20);
 	_PowerText.setString(std::to_string(_power));
 
@@ -203,14 +173,18 @@ void Game::update(sf::Time elapsedTime)
 	sf::Vector2f movement(0.f, 0.f);
 	if (mIsLookingUp) {
 		mPlayer.setTexture(_TextureLookingUp);
+		std::shared_ptr<Entity> player = std::make_shared<Entity>();
+		player->m_sprite = mPlayer;
+		player->m_type = EntityType::player;
+		player->m_size = mTexture.getSize();
+		player->m_position = mPlayer.getPosition();
+		EntityManager::m_Entities.push_back(player);
 	}
-	else if (mIsLookingDown) {
+	if (mIsLookingDown)
 		mPlayer.setTexture(_TextureLookingDown);
-	}
-	else if (mIsLookingLeft) {
+	if (mIsLookingLeft)
 		mPlayer.setTexture(_TextureLookingLeft);
-	}
-	else if (mIsLookingRight) {
+	if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
 	}
 
@@ -222,6 +196,7 @@ void Game::update(sf::Time elapsedTime)
 	player->m_size = _TextureLookingUp.getSize();
 	player->m_position = mPlayer.getPosition();
 	EntityManager::m_Entities.push_back(player);
+
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -257,6 +232,7 @@ void Game::render()
 	mWindow.draw(mText);
 	mWindow.draw(_LivesText);
 	mWindow.draw(_ScoreText);
+	mWindow.draw(_PowerText);
 	mWindow.display();
 }
 
@@ -302,6 +278,10 @@ void Game::HandleTexts()
 {
 	std::string lives = "Lives: " + std::to_string(_lives);
 	_LivesText.setString(lives);
+
+	std::string power = "Power: " + std::to_string(_power);
+	_PowerText.setString(power);
+
 	std::string score = "Score: " + std::to_string(_score);
 	_ScoreText.setString(score);
 	return;

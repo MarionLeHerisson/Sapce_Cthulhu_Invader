@@ -46,6 +46,7 @@ private:
 	static const sf::Time	TimePerFrame;
 
 	sf::RenderWindow		mWindow;
+	sf::Texture	mTexture;
 	sf::Sprite	mPlayer;
 	sf::Font	mFont;
 	sf::Text	mStatisticsText;
@@ -57,6 +58,10 @@ private:
 	int _power = 0;
 	sf::Text	_ScoreText;
 	int _score = 0;
+	int posSpawnUp[2] ;
+	int posSpawnRight[2] ;
+	int posSpawnDown[2] ;
+	int posSpawnLeft[2] ;
 
 	std::size_t	mStatisticsNumFrames;
 	bool mIsLookingUp;
@@ -76,17 +81,16 @@ private:
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
-	sf::Texture	_TextureFish;
-	
+
 	sf::Texture	_TextureEnemy;
-	sf::Sprite	_Enemy[SPRITE_COUNT_X][SPRITE_COUNT_Y];
+	sf::Sprite	_Enemy[4];
 	sf::Texture	_TextureBlock;
 	sf::Sprite	_Block[BLOCK_COUNT];
 	sf::Texture	_TextureWeapon;
+	sf::Texture	_TextureFish;
 	sf::Texture	_TextureWeaponEnemy;
 	sf::Texture	_TextureWeaponEnemyMaster;
 	sf::Sprite	_Weapon;
 	sf::Texture	_TextureEnemyMaster;
-	sf::Sprite	_EnemyMaster;
 };
 
