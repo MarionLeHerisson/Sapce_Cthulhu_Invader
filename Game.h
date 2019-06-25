@@ -53,7 +53,9 @@ private:
 	sf::Time	mStatisticsUpdateTime;
 	sf::Text	mText;
 	sf::Text	_LivesText;
+	sf::Text	_PowerText;
 	int _lives = 3;
+	int _power = 0;
 	sf::Text	_ScoreText;
 	int _score = 0;
 
@@ -72,7 +74,7 @@ private:
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
-	
+
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[SPRITE_COUNT_X][SPRITE_COUNT_Y];
 	sf::Texture	_TextureBlock;
