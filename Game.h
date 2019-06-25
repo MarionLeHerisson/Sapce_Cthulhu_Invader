@@ -61,9 +61,6 @@ private:
 	bool mIsLookingDown;
 	bool mIsLookingRight;
 	bool mIsLookingLeft;
-	bool mIsAttacking;
-	bool mIsEating;
-	bool mIsBlocking;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
@@ -72,13 +69,18 @@ private:
 	bool _PlayerWeaponFiredToBottom = false;
 	bool _PlayerWeaponFiredToRight = false;
 	bool _PlayerWeaponFiredToleft = false;
+	bool _IsPlayerTentacleFired = false;
+	bool _PlayerTentacleFiredToTop = false;
+	bool _PlayerTentacleFiredToBottom = false;
+	bool _PlayerTentacleFiredToRight = false;
+	bool _PlayerTentacleFiredToleft = false;
 
 	sf::Texture _TextureLookingUp;
 	sf::Texture _TextureLookingDown;
 	sf::Texture _TextureLookingRight;
 	sf::Texture _TextureLookingLeft;
 	sf::Texture	_TextureBubbleGreen;
-	sf::Texture	_TextureBubbleBlue;
+	sf::Texture	_TextureBubbleRed;
 	sf::Texture	_TextureFish;
 
 	sf::Texture	_TextureEnemy;

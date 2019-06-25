@@ -18,15 +18,13 @@ Game::Game()
 	, mIsLookingDown(false)
 	, mIsLookingRight(false)
 	, mIsLookingLeft(false)
-	, mIsAttacking(false)
-	, mIsEating(false)
-	, mIsBlocking(false)
+
 {
 	mWindow.setFramerateLimit(160);
 
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
 	_TextureBubbleGreen.loadFromFile("Media/Assets/bubble-green.png");
-	_TextureBubbleBlue.loadFromFile("Media/Assets/bubble-blue.png");
+	_TextureBubbleRed.loadFromFile("Media/Assets/bubble-red.png");
 	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
 	_TextureLookingDown.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 0, 64, 64));
 	_TextureLookingRight.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 128, 64, 192));
@@ -46,6 +44,7 @@ void Game::ResetSprites()
 	_IsGameOver = false;
 	_IsEnemyWeaponFired = false;
 	_IsPlayerWeaponFired = false;
+	_IsPlayerTentacleFired = false;
 
 	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
 	{
@@ -61,6 +60,7 @@ void Game::InitSprites()
 	_IsGameOver = false;
 	_IsEnemyWeaponFired = false;
 	_IsPlayerWeaponFired = false;
+	_IsPlayerTentacleFired = false;
 
 	//
 	// Player
@@ -184,18 +184,6 @@ void Game::update(sf::Time elapsedTime)
 	}
 	else if (mIsLookingRight) {
 		mPlayer.setTexture(_TextureLookingRight);
-	}
-
-	if (mIsAttacking) {
-		// envoi attaque dans direction du regard
-	}
-	else if (mIsEating) {
-		// si nourriture dans direction regard
-		// si poisson : vie ++
-		// si bébé : power ++
-	}
-	else if (mIsBlocking) {
-		// si attaque dans direction regard : annule attaque
 	}
 
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
@@ -577,6 +565,7 @@ void Game::HanldeWeaponMoves()
 		{
 			entity->m_enabled = false;
 			_IsPlayerWeaponFired = false;
+			_IsPlayerTentacleFired = false;
 		}
 
 		entity->m_sprite.setPosition(x, y);
@@ -621,6 +610,7 @@ void Game::HandleCollisionWeaponBlock()
 			{
 				weapon->m_enabled = false;
 				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
 				//break;
 				goto end2;
 			}
@@ -671,6 +661,7 @@ void Game::HandleCollisionWeaponEnemy()
 				enemy->m_enabled = false;
 				weapon->m_enabled = false;
 				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
 				_score += 10;
 				//break;
 				goto end;
@@ -731,15 +722,6 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 	else if (key == sf::Keyboard::Right) {
 		mIsLookingRight = isPressed;
 	}
-	else if (key == sf::Keyboard::A) {
-		mIsAttacking = isPressed;
-	}
-	else if (key == sf::Keyboard::Z) {
-		mIsEating = isPressed;
-	}
-	else if (key == sf::Keyboard::E) {
-		mIsBlocking = isPressed;
-	}
 
 	if (key == sf::Keyboard::Space)
 	{
@@ -754,6 +736,30 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		}
 
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		sw->m_sprite.setTexture(_TextureBubbleRed);
+		sw->m_sprite.setPosition(
+			EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
+			EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
+		sw->m_type = EntityType::weapon;
+		sw->m_size = _TextureBubbleRed.getSize();
+		EntityManager::m_Entities.push_back(sw);
+
+		//_IsPlayerWeaponFired = true;
+	}
+
+	if (key == sf::Keyboard::E)
+	{
+		if (isPressed == false)
+		{
+			return;
+		}
+
+		if (_IsPlayerTentacleFired == true)
+		{
+			return;
+		}
+
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setTexture(_TextureBubbleGreen);
 		sw->m_sprite.setPosition(
 			EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
@@ -762,6 +768,6 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		sw->m_size = _TextureBubbleGreen.getSize();
 		EntityManager::m_Entities.push_back(sw);
 
-		_IsPlayerWeaponFired = true;
+		//_IsPlayerTentacleFired = true;
 	}
 }
