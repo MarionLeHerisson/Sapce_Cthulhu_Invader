@@ -26,9 +26,11 @@ private:
 	void HandleCollisionEnemyWeaponBlock();
 	void HandleCollisionWeaponPlayer();
 	void HanldeEnemyWeaponMoves();
+	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
 	void HandleEnemyMoves();
+	void HandleEnemiesSwitching();
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
@@ -72,6 +74,7 @@ private:
 	bool mLeftIsHere;
 	bool mUpIsHere;
 	bool mDownIsHere;
+	std::string mdirectionLooking;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
@@ -93,6 +96,7 @@ private:
 	sf::Texture	_TextureBubbleGreen;
 	sf::Texture	_TextureBubbleRed;
 	sf::Texture	_TextureFish;
+	sf::Texture _TextureBaby;
 
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];

@@ -22,10 +22,12 @@ Game::Game()
 	, mLeftIsHere(false)
 	, mUpIsHere(false)
 	, mDownIsHere(false)
+	, mdirectionLooking("up")
 {
 	mWindow.setFramerateLimit(160);
 
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
+	_TextureBaby.loadFromFile("Media/Assets/baby.png", sf::IntRect(0, 0, 32, 32));
 	_TextureBubbleGreen.loadFromFile("Media/Assets/bubble-green.png");
 	_TextureBubbleRed.loadFromFile("Media/Assets/bubble-red.png");
 	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
@@ -69,7 +71,7 @@ void Game::InitSprites()
 	//
 
 	mPlayer.setTexture(_TextureLookingDown);
-	mPlayer.setPosition(400.f, 300.f);//set to the middle of the screen
+	mPlayer.setPosition(400.f,250.f);//set to the middle of the screen
 	std::shared_ptr<Entity> player = std::make_shared<Entity>();
 	player->m_sprite = mPlayer;
 	mPlayer.setTexture(_TextureLookingDown);
@@ -222,6 +224,7 @@ void Game::render()
 
 void Game::updateStatistics(sf::Time elapsedTime)
 {
+	std::cout << "la direction est " << mdirectionLooking << std::endl;
 	mStatisticsUpdateTime += elapsedTime;
 	mStatisticsNumFrames += 1;
 
@@ -255,6 +258,10 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		HanldeEnemyWeaponMoves();
 		HandleEnemyMoves();
 		HandleEnemyWeaponFiring();
+		//function to implements
+		HandleEnemiesSwitching();//If enemies not here -> put an enemy / if already here : if here for more than random turns -> swich enemy type
+		//HandleEnemiesFiring(); // if entity = enemy -> if 3s since fireing -> fire
+
 	}
 }
 
@@ -381,6 +388,10 @@ void Game::HanldeEnemyWeaponMoves()
 			entity->m_sprite.setPosition(x, y);
 		}
 	}
+}
+
+void Game::HandleEntitiesApparing() {
+
 }
 
 void Game::HandleEnemyWeaponFiring()
@@ -525,6 +536,121 @@ void Game::HandleEnemyMoves()
 		entity->m_sprite.setPosition(x, y);
 	}
 }
+
+void Game::HandleEnemiesSwitching()
+{
+	int r;
+	srand(time(NULL));
+	//
+	// Handle Enemy apparence
+	//
+
+	//if entity is here : continu;
+	//else : make rando entity appear
+
+	if (!mUpIsHere) {//if no entity up
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		sw->m_sprite.setPosition(415,50);
+		r = rand() % 3;
+		std::cout << "UP " << r <<std::endl;
+		switch (r) {
+		case 0:
+			sw->m_type = EntityType::enemy;
+			sw->m_sprite.setTexture(_TextureEnemy);
+			sw->m_size = _TextureEnemy.getSize();
+			break;
+		case 1:
+			sw->m_type = EntityType::baby;
+			sw->m_sprite.setTexture(_TextureBaby);
+			sw->m_size = _TextureBaby.getSize();
+			break;
+		case 2:
+			sw->m_type = EntityType::fish;
+			sw->m_sprite.setTexture(_TextureFish);
+			sw->m_size = _TextureFish.getSize();
+			break;
+		}
+		EntityManager::m_Entities.push_back(sw);
+		mUpIsHere = true;
+	}
+	if (!mDownIsHere) {// down
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		sw->m_sprite.setPosition(415, 500);
+		r = rand() % 3;
+		std::cout << "down " << r << std::endl;
+		switch (r) {
+		case 0:
+			sw->m_type = EntityType::enemy;
+			sw->m_sprite.setTexture(_TextureEnemy);
+			sw->m_size = _TextureEnemy.getSize();
+			break;
+		case 1:
+			sw->m_type = EntityType::baby;
+			sw->m_sprite.setTexture(_TextureBaby);
+			sw->m_size = _TextureBaby.getSize();
+			break;
+		case 2:
+			sw->m_type = EntityType::fish;
+			sw->m_sprite.setTexture(_TextureFish);
+			sw->m_size = _TextureFish.getSize();
+			break;
+		}
+		EntityManager::m_Entities.push_back(sw);
+		mDownIsHere = true;
+	}
+	if (!mLeftIsHere) {// left
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		sw->m_sprite.setPosition(20, 250);
+		r = rand() % 3;
+		std::cout << "left " << r << std::endl;
+		switch (r) {
+		case 0:
+			sw->m_type = EntityType::enemy;
+			sw->m_sprite.setTexture(_TextureEnemy);
+			sw->m_size = _TextureEnemy.getSize();
+			break;
+		case 1:
+			sw->m_type = EntityType::baby;
+			sw->m_sprite.setTexture(_TextureBaby);
+			sw->m_size = _TextureBaby.getSize();
+			break;
+		case 2:
+			sw->m_type = EntityType::fish;
+			sw->m_sprite.setTexture(_TextureFish);
+			sw->m_size = _TextureFish.getSize();
+			break;
+		}
+		EntityManager::m_Entities.push_back(sw);
+		mLeftIsHere = true;
+	}
+	if (!mRightIsHere) {//right
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		sw->m_sprite.setPosition(750, 250);
+		r = rand() % 3;
+		std::cout << "right " << r << std::endl;
+		switch (r) {
+		case 0:
+			sw->m_type = EntityType::wizard;
+			sw->m_sprite.setTexture(_TextureEnemy);
+			sw->m_size = _TextureEnemy.getSize();
+			break;
+		case 1:
+			sw->m_type = EntityType::baby;
+			sw->m_sprite.setTexture(_TextureBaby);
+			sw->m_size = _TextureBaby.getSize();
+			break;
+		case 2:
+			sw->m_type = EntityType::fish;
+			sw->m_sprite.setTexture(_TextureFish);
+			sw->m_size = _TextureFish.getSize();
+			break;
+		}
+		EntityManager::m_Entities.push_back(sw);
+		mRightIsHere = true;
+	}
+		
+	}
+//}
 
 void Game::HanldeWeaponMoves()
 {
@@ -698,18 +824,23 @@ void Game::DisplayGameOver()
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
+	
 	if (key == sf::Keyboard::Up) {
 		mIsLookingUp = isPressed;
+		mdirectionLooking = "up";
 	}
 	else if (key == sf::Keyboard::Down) {
 		mIsLookingDown = isPressed;
+		mdirectionLooking = "down";
 	}
 	else if (key == sf::Keyboard::Left) {
 		mIsLookingLeft = isPressed;
+		mdirectionLooking = "left";
 	}
 	else if (key == sf::Keyboard::Right) {
 		mIsLookingRight = isPressed;
-	}
+		mdirectionLooking = "right";
+;	}
 
 	if (key == sf::Keyboard::Space)
 	{
@@ -725,9 +856,30 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setTexture(_TextureBubbleRed);
-		sw->m_sprite.setPosition(
-			EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
-			EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
+		if (mdirectionLooking == "down") {
+			sw->movingDirection = mdirectionLooking;
+			sw->m_sprite.setPosition(
+				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
+				EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y);
+		}
+		else if (mdirectionLooking == "left") {
+			sw->movingDirection = mdirectionLooking;
+			sw->m_sprite.setPosition(
+				EntityManager::GetPlayer()->m_sprite.getPosition().x - EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
+				EntityManager::GetPlayer()->m_sprite.getPosition().y);
+		}
+		else if (mdirectionLooking == "right") {
+			sw->movingDirection = mdirectionLooking;
+			sw->m_sprite.setPosition(
+				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x,
+				EntityManager::GetPlayer()->m_sprite.getPosition().y);
+		}
+		else {
+			sw->movingDirection = mdirectionLooking;
+			sw->m_sprite.setPosition(
+				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
+				EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
+		}
 		sw->m_type = EntityType::weapon;
 		sw->m_size = _TextureBubbleRed.getSize();
 		EntityManager::m_Entities.push_back(sw);
@@ -762,96 +914,100 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 void Game::SpawnEntities()
 {
-	typeEnemy = rand() % 3;
-	
-	if (!mRightIsHere) {
-		typeEnemy = rand() % 3;
-		_Enemies[0].setTexture(_TextureFish);
-		_Enemies[0].setPosition(750.f, 300.f);
-		std::shared_ptr<Entity> se = std::make_shared<Entity>();
-		switch (typeEnemy)
-		{
-		case '0':
-			se->m_type = EntityType::baby;
-			break;
-		case '1':
-			se->m_type = EntityType::fish;
-			break;
-		case '2':
-			se->m_type = EntityType::enemy;
-			break;
-		}
-		se->m_size = _TextureFish.getSize();
-		se->m_position = _Enemies[3].getPosition();
-		EntityManager::m_Entities.push_back(se);
-		mRightIsHere = true;
-	}
-	if (!mLeftIsHere) {
-		typeEnemy = rand() % 3;
-		_Enemies[1].setTexture(_TextureFish);
-		_Enemies[1].setPosition(20.f, 300.f);
-		std::shared_ptr<Entity> se = std::make_shared<Entity>();
-		switch (typeEnemy)
-		{
-		case '0':
-			se->m_type = EntityType::baby;
-			break;
-		case '1':
-			se->m_type = EntityType::fish;
-			break;
-		case '2':
-			se->m_type = EntityType::enemy;
-			break;
-		}
-		se->m_size = _TextureFish.getSize();
-		se->m_position = _Enemies[3].getPosition();
-		EntityManager::m_Entities.push_back(se);
-		mLeftIsHere = true;
-	}
-	if (!mUpIsHere) {
-		typeEnemy = rand() % 3;
-		_Enemies[2].setTexture(_TextureFish);
-		_Enemies[2].setPosition(400.f, 20.f);
-		std::shared_ptr<Entity> se = std::make_shared<Entity>();
-		switch (typeEnemy)
-		{
-		case '0':
-			se->m_type = EntityType::baby;
-			break;
-		case '1':
-			se->m_type = EntityType::fish;
-			break;
-		case '2':
-			se->m_type = EntityType::enemy;
-			break;
-		}
-		se->m_size = _TextureFish.getSize();
-		se->m_position = _Enemies[3].getPosition();
-		EntityManager::m_Entities.push_back(se);
-		mUpIsHere = true;
-	}
-	if (!mDownIsHere) {
-		typeEnemy = rand() % 3;
-		_Enemies[3].setTexture(_TextureFish);
-		_Enemies[3].setPosition(400.f, 550.f);
-		std::shared_ptr<Entity> se = std::make_shared<Entity>();
-		switch (typeEnemy)
-		{
-		case '0':
-			se->m_type = EntityType::baby;
-			break;
-		case '1':
-			se->m_type = EntityType::fish;
-			break;
-		case '2':
-			se->m_type = EntityType::enemy;
-			break;
-		}
-		se->m_size = _TextureFish.getSize();
-		se->m_position = _Enemies[3].getPosition();
-		EntityManager::m_Entities.push_back(se);
-		mDownIsHere = true;
-	}
+//	typeEnemy = rand() % 3;
+//	
+//	if (!mRightIsHere) {
+//		typeEnemy = rand() % 3;
+//		_Enemies[0].setTexture(_TextureFish);
+//		_Enemies[0].setPosition(750.f, 300.f);
+//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+//		switch (typeEnemy)
+//		{
+//		case '0':
+//			se->m_type = EntityType::baby;
+//			break;
+//		case '1':
+//			se->m_type = EntityType::fish;
+//			break;
+//		case '2':
+//			se->m_type = EntityType::enemy;
+//			break;
+//		}
+//		se->m_size = _TextureFish.getSize();
+//		se->m_position = _Enemies[3].getPosition();
+//		se->m_enabled = true;
+//		EntityManager::m_Entities.push_back(se);
+//		mRightIsHere = true;
+//	}
+//	if (!mLeftIsHere) {
+//		typeEnemy = rand() % 3;
+//		_Enemies[1].setTexture(_TextureFish);
+//		_Enemies[1].setPosition(20.f, 300.f);
+//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+//		switch (typeEnemy)
+//		{
+//		case '0':
+//			se->m_type = EntityType::baby;
+//			break;
+//		case '1':
+//			se->m_type = EntityType::fish;
+//			break;
+//		case '2':
+//			se->m_type = EntityType::enemy;
+//			break;
+//		}
+//		se->m_size = _TextureFish.getSize();
+//		se->m_position = _Enemies[3].getPosition();
+//		se->m_enabled = true;
+//		EntityManager::m_Entities.push_back(se);
+//		mLeftIsHere = true;
+//	}
+//	if (!mUpIsHere) {
+//		typeEnemy = rand() % 3;
+//		_Enemies[2].setTexture(_TextureFish);
+//		_Enemies[2].setPosition(400.f, 20.f);
+//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+//		switch (typeEnemy)
+//		{
+//		case '0':
+//			se->m_type = EntityType::baby;
+//			break;
+//		case '1':
+//			se->m_type = EntityType::fish;
+//			break;
+//		case '2':
+//			se->m_type = EntityType::enemy;
+//			break;
+//		}
+//		se->m_size = _TextureFish.getSize();
+//		se->m_position = _Enemies[3].getPosition();
+//		se->m_enabled = true;
+//		EntityManager::m_Entities.push_back(se);
+//		mUpIsHere = true;
+//	}
+//	if (!mDownIsHere) {
+//		typeEnemy = rand() % 3;
+//		_Enemies[3].setTexture(_TextureFish);
+//		_Enemies[3].setPosition(400.f, 550.f);
+//		std::shared_ptr<Entity> se = std::make_shared<Entity>();
+//		switch (typeEnemy)
+//		{
+//		case '0':
+//			se->m_type = EntityType::baby;
+//			break;
+//		case '1':
+//			se->m_type = EntityType::fish;
+//			break;
+//		case '2':
+//			se->m_type = EntityType::enemy;
+//			break;
+//		}
+//		se->m_size = _TextureFish.getSize();
+//		se->m_position = _Enemies[3].getPosition();
+//		se->m_enabled = true;
+//		EntityManager::m_Entities.push_back(se);
+//		mDownIsHere = true;
+//	}
 
 	
 }
