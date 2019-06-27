@@ -1,5 +1,6 @@
 #pragma once
 #include "Weapon.h"
+#include <iostream>
 
 #define SPRITE_COUNT_X 11
 #define SPRITE_COUNT_Y 5
@@ -25,15 +26,19 @@ private:
 	void HandleCollisionEnemyWeaponBlock();
 	void HandleCollisionWeaponPlayer();
 	void HanldeEnemyWeaponMoves();
+	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
 	void HandleEnemyMoves();
+	void HandleEnemiesSwitching();
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
 	void HandleGameOver();
 	void DisplayGameOver();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	void SpawnEntities();
+
 
 private:
 	static const float		PlayerSpeed;
@@ -55,12 +60,21 @@ private:
 	int posSpawnRight[2] ;
 	int posSpawnDown[2] ;
 	int posSpawnLeft[2] ;
+	int typeEnemy;
+	int isGenerated;
+	int posGenerate;
+	sf::Sprite	_Enemies[4];
 
 	std::size_t	mStatisticsNumFrames;
 	bool mIsLookingUp;
 	bool mIsLookingDown;
 	bool mIsLookingRight;
 	bool mIsLookingLeft;
+	bool mRightIsHere;
+	bool mLeftIsHere;
+	bool mUpIsHere;
+	bool mDownIsHere;
+	std::string mdirectionLooking;
 
 	bool _IsGameOver = false;
 	bool _IsEnemyWeaponFired = false;
@@ -82,6 +96,7 @@ private:
 	sf::Texture	_TextureBubbleGreen;
 	sf::Texture	_TextureBubbleRed;
 	sf::Texture	_TextureFish;
+	sf::Texture _TextureBaby;
 
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];

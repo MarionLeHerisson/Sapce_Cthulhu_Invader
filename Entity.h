@@ -7,7 +7,9 @@ enum EntityType
 	enemyWeapon,
 	enemyMasterWeapon,
 	enemy,
-	enemyMaster,
+	wizard,
+	baby,
+	fish,
 	block
 };
 
@@ -22,6 +24,7 @@ public:
 	sf::Vector2u m_size;
 	sf::Vector2f m_position;
 	EntityType m_type;
+	std::string movingDirection = "up";
 	bool m_enabled = true;
 
 	// Enemy only
