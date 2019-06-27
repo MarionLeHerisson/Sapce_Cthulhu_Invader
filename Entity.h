@@ -24,11 +24,12 @@ public:
 	sf::Vector2u m_size;
 	sf::Vector2f m_position;
 	EntityType m_type;
-	std::string movingDirection = "up";
+	std::string movingDirection;
 	bool m_enabled = true;
 
 	// Enemy only
 	bool m_bLeftToRight = true;
 	int m_times = 0;
+	std::string getDirection();
 };
 

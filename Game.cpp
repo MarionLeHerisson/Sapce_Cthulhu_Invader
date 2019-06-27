@@ -670,19 +670,60 @@ void Game::HanldeWeaponMoves()
 			continue;
 		}
 
-		float x, y;
-		x = entity->m_sprite.getPosition().x;
-		y = entity->m_sprite.getPosition().y;
-		y--;
-
-		if (y <= 0)
-		{
-			entity->m_enabled = false;
-			_IsPlayerWeaponFired = false;
-			_IsPlayerTentacleFired = false;
+		if (entity->movingDirection == "down") {
+			float x, y;
+			x = entity->m_sprite.getPosition().x;
+			y = entity->m_sprite.getPosition().y;
+			y++;
+			if (y >= 600)
+			{
+				entity->m_enabled = false;
+				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
+			}
+			entity->m_sprite.setPosition(x, y);
+		}
+		else if (entity->movingDirection == "right") {
+			float x, y;
+			x = entity->m_sprite.getPosition().x;
+			y = entity->m_sprite.getPosition().y;
+			x++;
+			if (x > 600)
+			{
+				entity->m_enabled = false;
+				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
+			}
+			entity->m_sprite.setPosition(x, y);
+		}
+		else if (entity->movingDirection == "left") {
+			float x, y;
+			x = entity->m_sprite.getPosition().x;
+			y = entity->m_sprite.getPosition().y;
+			x--;
+			if (x <= 0)
+			{
+				entity->m_enabled = false;
+				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
+			}
+			entity->m_sprite.setPosition(x, y);
+		}
+		else(entity->movingDirection == "up"); {
+			float x, y;
+			x = entity->m_sprite.getPosition().x;
+			y = entity->m_sprite.getPosition().y;
+			y--;
+			if (y <= 0)
+			{
+				entity->m_enabled = false;
+				_IsPlayerWeaponFired = false;
+				_IsPlayerTentacleFired = false;
+			}
+			entity->m_sprite.setPosition(x, y);
 		}
 
-		entity->m_sprite.setPosition(x, y);
+		
 	}
 }
 
