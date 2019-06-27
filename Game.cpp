@@ -15,7 +15,7 @@ Game::Game()
 	, mStatisticsUpdateTime()
 	, mStatisticsNumFrames(0)
 	, mIsLookingUp(false)
-	, mIsLookingDown(false)
+	, mIsLookingDown(true)
 	, mIsLookingRight(false)
 	, mIsLookingLeft(false)
 	, mRightIsHere(false)
@@ -940,11 +940,29 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 			return;
 		}
 
+		int posX = 0;
+		int posY = 0;
+
+		if (mIsLookingUp) {
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+		}
+		else if (mIsLookingDown) {
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
+		}
+		else if (mIsLookingRight) {
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+		}
+		else if (mIsLookingLeft) {
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+		}
+
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setTexture(_TextureBubbleGreen);
-		sw->m_sprite.setPosition(
-			EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
-			EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
+		sw->m_sprite.setPosition(posX, posY);
 		sw->m_type = EntityType::weapon;
 		sw->m_size = _TextureBubbleGreen.getSize();
 		EntityManager::m_Entities.push_back(sw);
