@@ -878,22 +878,22 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		int posX = 0;
 		int posY = 0;
 
-		if (mIsLookingDown) {
+		if (mdirectionLooking == "down") {
 			sw->movingDirection = "down";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
 		}
-		else if (mIsLookingLeft) {
+		else if (mdirectionLooking == "left") {
 			sw->movingDirection = "left";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
 		}
-		else if (mIsLookingRight) {
+		else if (mdirectionLooking == "right") {
 			sw->movingDirection = "right";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
 		}
-		else if(mIsLookingUp){
+		else if(mdirectionLooking == "up"){
 			sw->movingDirection = "up";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
@@ -925,22 +925,22 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 
-		if (mIsLookingDown) {
+		if (mdirectionLooking == "down") {
 			sw->movingDirection = "down";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
 		}
-		else if (mIsLookingLeft) {
+		else if (mdirectionLooking == "left") {
 			sw->movingDirection = "left";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
 		}
-		else if (mIsLookingRight) {
+		else if (mdirectionLooking == "right") {
 			sw->movingDirection = "right";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
 		}
-		else if (mIsLookingUp) {
+		else if (mdirectionLooking == "up") {
 			sw->movingDirection = "up";
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
@@ -963,7 +963,7 @@ void Game::SpawnEntities()
 	if (!mRightIsHere) {
 		typeEnemy = rand() % 3;
 		_Enemies[0].setTexture(_TextureFish);
-		_Enemies[0].setPosition(750.f, 300.f);
+		_Enemies[0].setPosition(750.f, EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getPosition().y);
 		std::shared_ptr<Entity> se = std::make_shared<Entity>();
 		switch (typeEnemy)
 		{
@@ -986,7 +986,7 @@ void Game::SpawnEntities()
 	if (!mLeftIsHere) {
 		typeEnemy = rand() % 3;
 		_Enemies[1].setTexture(_TextureFish);
-		_Enemies[1].setPosition(20.f, 300.f);
+		_Enemies[1].setPosition(20.f, EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getPosition().y);
 		std::shared_ptr<Entity> se = std::make_shared<Entity>();
 		switch (typeEnemy)
 		{
