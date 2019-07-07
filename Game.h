@@ -29,7 +29,7 @@ private:
 	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
-	void HandleEnemyMoves();
+	//void HandleEnemyMoves();
 	void HandleEnemiesSwitching();
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();

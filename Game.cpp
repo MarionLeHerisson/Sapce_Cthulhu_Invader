@@ -163,7 +163,6 @@ void Game::processEvents()
 
 void Game::update(sf::Time elapsedTime)
 {
-	sf::Vector2f movement(0.f, 0.f);
 	if (mIsLookingUp) {
 		mPlayer.setTexture(_TextureLookingUp);
 	}
@@ -183,21 +182,6 @@ void Game::update(sf::Time elapsedTime)
 	player->m_size = _TextureLookingUp.getSize();
 	player->m_position = mPlayer.getPosition();
 	EntityManager::m_Entities.push_back(player);
-
-	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
-	{
-		if (entity->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (entity->m_type != EntityType::player)
-		{
-			continue;
-		}
-
-		entity->m_sprite.move(movement * elapsedTime.asSeconds());
-	}
 }
 
 void Game::render()
@@ -256,7 +240,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		HandleCollisionBlockEnemy();
 		HanldeWeaponMoves();
 		HanldeEnemyWeaponMoves();
-		HandleEnemyMoves();
+		//HandleEnemyMoves();
 		HandleEnemyWeaponFiring();
 		//function to implements
 		HandleEnemiesSwitching();//If enemies not here -> put an enemy / if already here : if here for more than random turns -> swich enemy type
@@ -415,9 +399,9 @@ void Game::HandleEnemyWeaponFiring()
 		}
 
 		// a little random...
-		int r = rand() % 20;
-		if (r != 10)
-			continue;
+		//int r = rand() % 20;
+		//if (r != 10)
+		//	continue;
 
 		float x, y;
 		x = entity->m_sprite.getPosition().x;
@@ -490,52 +474,52 @@ end3:
 	return;
 }
 
-void Game::HandleEnemyMoves()
-{
-	//
-	// Handle Enemy moves
-	//
-
-	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
-	{
-		if (entity->m_enabled == false)
-		{
-			continue;
-		}
-
-		if (entity->m_type != EntityType::enemy)
-		{
-			continue;
-		}
-
-		float x, y;
-		x = entity->m_sprite.getPosition().x;
-		y = entity->m_sprite.getPosition().y;
-
-		if (entity->m_bLeftToRight == true)
-			x++;
-		else
-			x--;
-		entity->m_times++;
-
-		if (entity->m_times >= 100) //0)
-		{
-			if (entity->m_bLeftToRight == true)
-			{
-				entity->m_bLeftToRight = false;
-				entity->m_times = 0;
-			}
-			else
-			{
-				entity->m_bLeftToRight = true;
-				entity->m_times = 0;
-				y += 1;
-			}
-		}
-
-		entity->m_sprite.setPosition(x, y);
-	}
-}
+//void Game::HandleEnemyMoves()
+//{
+//	//
+//	// Handle Enemy moves
+//	//
+//
+//	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
+//	{
+//		if (entity->m_enabled == false)
+//		{
+//			continue;
+//		}
+//
+//		if (entity->m_type != EntityType::enemy)
+//		{
+//			continue;
+//		}
+//
+//		float x, y;
+//		x = entity->m_sprite.getPosition().x;
+//		y = entity->m_sprite.getPosition().y;
+//
+//		if (entity->m_bLeftToRight == true)
+//			x++;
+//		else
+//			x--;
+//		entity->m_times++;
+//
+//		if (entity->m_times >= 100) //0)
+//		{
+//			if (entity->m_bLeftToRight == true)
+//			{
+//				entity->m_bLeftToRight = false;
+//				entity->m_times = 0;
+//			}
+//			else
+//			{
+//				entity->m_bLeftToRight = true;
+//				entity->m_times = 0;
+//				//y += 1;
+//			}
+//		}
+//
+//		entity->m_sprite.setPosition(x, y);
+//	}
+//}
 
 void Game::HandleEnemiesSwitching()
 {
@@ -670,8 +654,8 @@ void Game::HanldeWeaponMoves()
 			continue;
 		}
 
+		float x, y;
 		if (entity->movingDirection == "down") {
-			float x, y;
 			x = entity->m_sprite.getPosition().x;
 			y = entity->m_sprite.getPosition().y;
 			y++;
@@ -684,7 +668,6 @@ void Game::HanldeWeaponMoves()
 			entity->m_sprite.setPosition(x, y);
 		}
 		else if (entity->movingDirection == "right") {
-			float x, y;
 			x = entity->m_sprite.getPosition().x;
 			y = entity->m_sprite.getPosition().y;
 			x++;
@@ -697,7 +680,6 @@ void Game::HanldeWeaponMoves()
 			entity->m_sprite.setPosition(x, y);
 		}
 		else if (entity->movingDirection == "left") {
-			float x, y;
 			x = entity->m_sprite.getPosition().x;
 			y = entity->m_sprite.getPosition().y;
 			x--;
@@ -709,8 +691,7 @@ void Game::HanldeWeaponMoves()
 			}
 			entity->m_sprite.setPosition(x, y);
 		}
-		else(entity->movingDirection == "up"); {
-			float x, y;
+		else if (entity->movingDirection == "up") {
 			x = entity->m_sprite.getPosition().x;
 			y = entity->m_sprite.getPosition().y;
 			y--;
@@ -722,8 +703,6 @@ void Game::HanldeWeaponMoves()
 			}
 			entity->m_sprite.setPosition(x, y);
 		}
-
-		
 	}
 }
 
@@ -896,31 +875,32 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		}
 
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+		int posX = 0;
+		int posY = 0;
+
+		if (mIsLookingDown) {
+			sw->movingDirection = "down";
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
+		}
+		else if (mIsLookingLeft) {
+			sw->movingDirection = "left";
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x - EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+		}
+		else if (mIsLookingRight) {
+			sw->movingDirection = "right";
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+		}
+		else if(mIsLookingUp){
+			sw->movingDirection = "up";
+			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y - 10;
+		}
+
 		sw->m_sprite.setTexture(_TextureBubbleRed);
-		if (mdirectionLooking == "down") {
-			sw->movingDirection = mdirectionLooking;
-			sw->m_sprite.setPosition(
-				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
-				EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y);
-		}
-		else if (mdirectionLooking == "left") {
-			sw->movingDirection = mdirectionLooking;
-			sw->m_sprite.setPosition(
-				EntityManager::GetPlayer()->m_sprite.getPosition().x - EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
-				EntityManager::GetPlayer()->m_sprite.getPosition().y);
-		}
-		else if (mdirectionLooking == "right") {
-			sw->movingDirection = mdirectionLooking;
-			sw->m_sprite.setPosition(
-				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x,
-				EntityManager::GetPlayer()->m_sprite.getPosition().y);
-		}
-		else {
-			sw->movingDirection = mdirectionLooking;
-			sw->m_sprite.setPosition(
-				EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2,
-				EntityManager::GetPlayer()->m_sprite.getPosition().y - 10);
-		}
+		sw->m_sprite.setPosition(posX, posY);
 		sw->m_type = EntityType::weapon;
 		sw->m_size = _TextureBubbleRed.getSize();
 		EntityManager::m_Entities.push_back(sw);
@@ -943,24 +923,29 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		int posX = 0;
 		int posY = 0;
 
+		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+
 		if (mIsLookingUp) {
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+			sw->movingDirection = "up";
 		}
 		else if (mIsLookingDown) {
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
+			sw->movingDirection = "down";
 		}
 		else if (mIsLookingRight) {
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			sw->movingDirection = "right";
 		}
 		else if (mIsLookingLeft) {
 			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
 			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			sw->movingDirection = "left";
 		}
 
-		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setTexture(_TextureBubbleGreen);
 		sw->m_sprite.setPosition(posX, posY);
 		sw->m_type = EntityType::weapon;
