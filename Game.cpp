@@ -143,7 +143,6 @@ void Game::processEvents()
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 	{
-		SpawnEntities();
 		switch (event.type)
 		{
 		case sf::Event::KeyPressed:
@@ -209,7 +208,6 @@ void Game::render()
 
 void Game::updateStatistics(sf::Time elapsedTime)
 {
-	std::cout << "la direction est " << mdirectionLooking << std::endl;
 	mStatisticsUpdateTime += elapsedTime;
 	mStatisticsNumFrames += 1;
 
@@ -234,6 +232,7 @@ void Game::updateStatistics(sf::Time elapsedTime)
 
 		HandleTexts();
 		HandleGameOver();
+		HandleEnemiesSwitching();
 		HandleCollisionWeaponEnemy();
 		HandleCollisionWeaponPlayer();
 		HandleCollisionWeaponBlock();
@@ -242,9 +241,6 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		HanldeWeaponMoves();
 		HanldeEnemyWeaponMoves();
 		HandleEnemyWeaponFiring();
-		//function to implements
-		HandleEnemiesSwitching();//If enemies not here -> put an enemy / if already here : if here for more than random turns -> swich enemy type
-		//HandleEnemiesFiring(); // if entity = enemy -> if 3s since fireing -> fire
 
 	}
 }
@@ -398,11 +394,6 @@ void Game::HandleEnemyWeaponFiring()
 			continue;
 		}
 
-		// a little random...
-		//int r = rand() % 20;
-		//if (r != 10)
-		//	continue;
-
 		float x, y;
 		x = entity->m_sprite.getPosition().x;
 		y = entity->m_sprite.getPosition().y;
@@ -474,53 +465,6 @@ end3:
 	return;
 }
 
-//void Game::HandleEnemyMoves()
-//{
-//	//
-//	// Handle Enemy moves
-//	//
-//
-//	for (std::shared_ptr<Entity> entity : EntityManager::m_Entities)
-//	{
-//		if (entity->m_enabled == false)
-//		{
-//			continue;
-//		}
-//
-//		if (entity->m_type != EntityType::enemy)
-//		{
-//			continue;
-//		}
-//
-//		float x, y;
-//		x = entity->m_sprite.getPosition().x;
-//		y = entity->m_sprite.getPosition().y;
-//
-//		if (entity->m_bLeftToRight == true)
-//			x++;
-//		else
-//			x--;
-//		entity->m_times++;
-//
-//		if (entity->m_times >= 100) //0)
-//		{
-//			if (entity->m_bLeftToRight == true)
-//			{
-//				entity->m_bLeftToRight = false;
-//				entity->m_times = 0;
-//			}
-//			else
-//			{
-//				entity->m_bLeftToRight = true;
-//				entity->m_times = 0;
-//				//y += 1;
-//			}
-//		}
-//
-//		entity->m_sprite.setPosition(x, y);
-//	}
-//}
-
 void Game::HandleEnemiesSwitching()
 {
 	int r;
@@ -554,6 +498,7 @@ void Game::HandleEnemiesSwitching()
 			sw->m_size = _TextureFish.getSize();
 			break;
 		}
+		sw->positionSpawn = 1;
 		EntityManager::m_Entities.push_back(sw);
 		mUpIsHere = true;
 	}
@@ -579,6 +524,7 @@ void Game::HandleEnemiesSwitching()
 			sw->m_size = _TextureFish.getSize();
 			break;
 		}
+		sw->positionSpawn = 3;
 		EntityManager::m_Entities.push_back(sw);
 		mDownIsHere = true;
 	}
@@ -604,6 +550,7 @@ void Game::HandleEnemiesSwitching()
 			sw->m_size = _TextureFish.getSize();
 			break;
 		}
+		sw->positionSpawn = 4;
 		EntityManager::m_Entities.push_back(sw);
 		mLeftIsHere = true;
 	}
@@ -629,6 +576,7 @@ void Game::HandleEnemiesSwitching()
 			sw->m_size = _TextureFish.getSize();
 			break;
 		}
+		sw->positionSpawn = 2;
 		EntityManager::m_Entities.push_back(sw);
 		mRightIsHere = true;
 	}
@@ -780,6 +728,7 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					continue;
 				}
+				std::cout << "spawn : " << enemy->positionSpawn << std::endl;
 
 				sf::FloatRect boundWeapon;
 				boundWeapon = weapon->m_sprite.getGlobalBounds();
@@ -791,6 +740,21 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					enemy->m_enabled = false;
 					weapon->m_enabled = false;
+					switch (enemy->positionSpawn)
+					{
+					case 1:
+						mUpIsHere = false;
+						break;
+					case 2:
+						mRightIsHere = false;
+						break;
+					case 3:
+						mDownIsHere = false;
+						break;
+					case 4:
+						mLeftIsHere = false;
+						break;
+					}
 					_IsPlayerWeaponFired = false;
 					_IsPlayerTentacleFired = false;
 					_score += 10;
@@ -799,48 +763,83 @@ void Game::HandleCollisionWeaponEnemy()
 				}
 			}
 			else if (enemy->m_type == EntityType::baby) {
-				if (enemy->m_enabled == false)
-				{
-					continue;
-				}
-				sf::FloatRect boundWeapon;
-				boundWeapon = weapon->m_sprite.getGlobalBounds();
+				if (weapon->isTentacle) {
+					if (enemy->m_enabled == false)
+					{
+						continue;
+					}
+					sf::FloatRect boundWeapon;
+					boundWeapon = weapon->m_sprite.getGlobalBounds();
 
-				sf::FloatRect boundEnemy;
-				boundEnemy = enemy->m_sprite.getGlobalBounds();
+					sf::FloatRect boundEnemy;
+					boundEnemy = enemy->m_sprite.getGlobalBounds();
 
-				if (boundWeapon.intersects(boundEnemy) == true)
-				{
-					enemy->m_enabled = false;
-					weapon->m_enabled = false;
-					_IsPlayerWeaponFired = false;
-					_IsPlayerTentacleFired = false;
-					_power += 10;
-					//break;
-					goto end;
+					if (boundWeapon.intersects(boundEnemy) == true)
+					{
+						enemy->m_enabled = false;
+						weapon->m_enabled = false;
+						switch (enemy->positionSpawn)
+						{
+						case 1:
+							mUpIsHere = false;
+							break;
+						case 2:
+							mRightIsHere = false;
+							break;
+						case 3:
+							mDownIsHere = false;
+							break;
+						case 4:
+							mLeftIsHere = false;
+							break;
+						}
+						_IsPlayerWeaponFired = false;
+						_IsPlayerTentacleFired = false;
+						_power += 10;
+						//break;
+						goto end;
+					}
 				}
 			}
 			else if (enemy->m_type == EntityType::fish) {
-				if (enemy->m_enabled == false)
-				{
-					continue;
-				}
-				sf::FloatRect boundWeapon;
-				boundWeapon = weapon->m_sprite.getGlobalBounds();
+				if (weapon->isTentacle) {
+					if (enemy->m_enabled == false)
+					{
+						continue;
+					}
+					sf::FloatRect boundWeapon;
+					boundWeapon = weapon->m_sprite.getGlobalBounds();
 
-				sf::FloatRect boundEnemy;
-				boundEnemy = enemy->m_sprite.getGlobalBounds();
+					sf::FloatRect boundEnemy;
+					boundEnemy = enemy->m_sprite.getGlobalBounds();
 
-				if (boundWeapon.intersects(boundEnemy) == true)
-				{
-					enemy->m_enabled = false;
-					weapon->m_enabled = false;
-					_IsPlayerWeaponFired = false;
-					_IsPlayerTentacleFired = false;
-					_lives += 1;
-					//break;
-					goto end;
+					if (boundWeapon.intersects(boundEnemy) == true)
+					{
+						enemy->m_enabled = false;
+						weapon->m_enabled = false;
+						switch (enemy->positionSpawn)
+						{
+						case 1:
+							mUpIsHere = false;
+							break;
+						case 2:
+							mRightIsHere = false;
+							break;
+						case 3:
+							mDownIsHere = false;
+							break;
+						case 4:
+							mLeftIsHere = false;
+							break;
+						}
+						_IsPlayerWeaponFired = false;
+						_IsPlayerTentacleFired = false;
+						_lives += 1;
+						//break;
+						goto end;
+					}
 				}
+				
 			}
 		}
 	}
@@ -1001,7 +1000,10 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 void Game::SpawnEntities()
 {
-	/*std::cout << "la direction est " << mdirectionLooking << std::endl;
+	//std::cout << "right " << mRightIsHere << std::endl;
+	//std::cout << "left " << mLeftIsHere << std::endl;
+	//std::cout << "up " << mUpIsHere << std::endl;
+	//std::cout << "down " << mDownIsHere << std::endl;
 	typeEnemy = rand() % 3;
 
 	if (!mRightIsHere) {
@@ -1021,6 +1023,7 @@ void Game::SpawnEntities()
 			se->m_type = EntityType::enemy;
 			break;
 		}
+		se->positionSpawn =2;
 		se->m_size = _TextureFish.getSize();
 		se->m_position = _Enemies[3].getPosition();
 		se->m_enabled = true;
@@ -1044,6 +1047,7 @@ void Game::SpawnEntities()
 			se->m_type = EntityType::enemy;
 			break;
 		}
+		se->positionSpawn = 4;
 		se->m_size = _TextureFish.getSize();
 		se->m_position = _Enemies[3].getPosition();
 		se->m_enabled = true;
@@ -1067,6 +1071,7 @@ void Game::SpawnEntities()
 			se->m_type = EntityType::enemy;
 			break;
 		}
+		se->positionSpawn = 1;
 		se->m_size = _TextureFish.getSize();
 		se->m_position = _Enemies[3].getPosition();
 		se->m_enabled = true;
@@ -1090,12 +1095,13 @@ void Game::SpawnEntities()
 			se->m_type = EntityType::enemy;
 			break;
 		}
+		se->positionSpawn = 3;
 		se->m_size = _TextureFish.getSize();
 		se->m_position = _Enemies[3].getPosition();
 		se->m_enabled = true;
 		EntityManager::m_Entities.push_back(se);
 		mDownIsHere = true;
-	}*/
+	}
 
 
 }

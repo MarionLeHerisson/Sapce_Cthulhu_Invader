@@ -27,12 +27,12 @@ public:
 	std::string movingDirection;
 	bool m_enabled = true;
 	bool isTentacle = false;
-	std::string positionSpawn;
+	int positionSpawn;
 
 	// Enemy only
 	bool m_bLeftToRight = true;
 	int m_times = 0;
 	std::string getDirection();
-	std::string getSpawn();
+	int getSpawn();
 };
 
