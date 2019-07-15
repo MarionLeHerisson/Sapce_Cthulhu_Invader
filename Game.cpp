@@ -356,17 +356,62 @@ void Game::HanldeEnemyWeaponMoves()
 		float x, y;
 		x = entity->m_sprite.getPosition().x;
 		y = entity->m_sprite.getPosition().y;
-		y += 1.0f;
 
-		if (y >= 600)
+		switch (entity->positionSpawn)
 		{
-			entity->m_enabled = false;
-			_IsEnemyWeaponFired = false;
+		case 1 :
+			y += 1.0f;
+			if (y >= 600)
+			{
+				entity->m_enabled = false;
+				_IsEnemyWeaponFired = false;
+			}
+			else
+			{
+				entity->m_sprite.setPosition(x, y);
+			}
+			break;
+		case 2:
+			x -= 1.0f;
+			if (x <= 0)
+			{
+				entity->m_enabled = false;
+				_IsEnemyWeaponFired = false;
+			}
+			else
+			{
+				entity->m_sprite.setPosition(x, y);
+			}
+			break;
+		case 3:
+			y -= 1.0f;
+			if (y <= 0)
+			{
+				entity->m_enabled = false;
+				_IsEnemyWeaponFired = false;
+			}
+			else
+			{
+				entity->m_sprite.setPosition(x, y);
+			}
+			break;
+		case 4:
+			x += 1.0f;
+			if (x >= 600)
+			{
+				entity->m_enabled = false;
+				_IsEnemyWeaponFired = false;
+			}
+			else
+			{
+				entity->m_sprite.setPosition(x, y);
+			}
+			break;
 		}
-		else
-		{
-			entity->m_sprite.setPosition(x, y);
-		}
+
+		
+
+		
 	}
 }
 
@@ -408,6 +453,8 @@ void Game::HandleEnemyWeaponFiring()
 		sw->m_sprite.setPosition(
 			entity->m_sprite.getPosition().x + _TextureEnemy.getSize().x / 2,
 			entity->m_sprite.getPosition().y - 10);
+
+		sw->positionSpawn = entity->positionSpawn;
 
 		sw->m_type = EntityType::enemyWeapon;
 		sw->m_size = _TextureWeaponEnemy.getSize();
@@ -762,82 +809,86 @@ void Game::HandleCollisionWeaponEnemy()
 				}
 			}
 			else if (enemy->m_type == EntityType::baby) {
-				if (weapon->isTentacle) {
-					if (enemy->m_enabled == false)
-					{
-						continue;
-					}
-					sf::FloatRect boundWeapon;
-					boundWeapon = weapon->m_sprite.getGlobalBounds();
-
-					sf::FloatRect boundEnemy;
-					boundEnemy = enemy->m_sprite.getGlobalBounds();
-
-					if (boundWeapon.intersects(boundEnemy) == true)
-					{
-						enemy->m_enabled = false;
-						weapon->m_enabled = false;
-						switch (enemy->positionSpawn)
-						{
-						case 1:
-							mUpIsHere = false;
-							break;
-						case 2:
-							mRightIsHere = false;
-							break;
-						case 3:
-							mDownIsHere = false;
-							break;
-						case 4:
-							mLeftIsHere = false;
-							break;
-						}
-						_IsPlayerWeaponFired = false;
-						_IsPlayerTentacleFired = false;
-						_power += 10;
-						//break;
-						goto end;
-					}
+				
+				if (enemy->m_enabled == false)
+				{
+					continue;
 				}
+				sf::FloatRect boundWeapon;
+				boundWeapon = weapon->m_sprite.getGlobalBounds();
+
+				sf::FloatRect boundEnemy;
+				boundEnemy = enemy->m_sprite.getGlobalBounds();
+
+				if (boundWeapon.intersects(boundEnemy) == true)
+				{
+					enemy->m_enabled = false;
+					weapon->m_enabled = false;
+					switch (enemy->positionSpawn)
+					{
+					case 1:
+						mUpIsHere = false;
+						break;
+					case 2:
+						mRightIsHere = false;
+						break;
+					case 3:
+						mDownIsHere = false;
+						break;
+					case 4:
+						mLeftIsHere = false;
+						break;
+					}
+					_IsPlayerWeaponFired = false;
+					_IsPlayerTentacleFired = false;
+					if (weapon->isTentacle) {
+						_power += 10;
+					}
+					//break;
+					goto end;
+				}
+				
 			}
 			else if (enemy->m_type == EntityType::fish) {
-				if (weapon->isTentacle) {
-					if (enemy->m_enabled == false)
-					{
-						continue;
-					}
-					sf::FloatRect boundWeapon;
-					boundWeapon = weapon->m_sprite.getGlobalBounds();
-
-					sf::FloatRect boundEnemy;
-					boundEnemy = enemy->m_sprite.getGlobalBounds();
-
-					if (boundWeapon.intersects(boundEnemy) == true)
-					{
-						enemy->m_enabled = false;
-						weapon->m_enabled = false;
-						switch (enemy->positionSpawn)
-						{
-						case 1:
-							mUpIsHere = false;
-							break;
-						case 2:
-							mRightIsHere = false;
-							break;
-						case 3:
-							mDownIsHere = false;
-							break;
-						case 4:
-							mLeftIsHere = false;
-							break;
-						}
-						_IsPlayerWeaponFired = false;
-						_IsPlayerTentacleFired = false;
-						_lives += 1;
-						//break;
-						goto end;
-					}
+				
+				if (enemy->m_enabled == false)
+				{
+					continue;
 				}
+				sf::FloatRect boundWeapon;
+				boundWeapon = weapon->m_sprite.getGlobalBounds();
+
+				sf::FloatRect boundEnemy;
+				boundEnemy = enemy->m_sprite.getGlobalBounds();
+
+				if (boundWeapon.intersects(boundEnemy) == true)
+				{
+					enemy->m_enabled = false;
+					weapon->m_enabled = false;
+					switch (enemy->positionSpawn)
+					{
+					case 1:
+						mUpIsHere = false;
+						break;
+					case 2:
+						mRightIsHere = false;
+						break;
+					case 3:
+						mDownIsHere = false;
+						break;
+					case 4:
+						mLeftIsHere = false;
+						break;
+					}
+					_IsPlayerWeaponFired = false;
+					_IsPlayerTentacleFired = false;
+					if (weapon->isTentacle) {
+						_lives += 1;
+					}
+					//break;
+					goto end;
+				}
+				
 				
 			}
 		}
