@@ -23,20 +23,21 @@ private:
 
 	void updateStatistics(sf::Time elapsedTime);
 	void HandleTexts();
-	void HandleCollisionPlayerWeaponEnemy();
+	void HandleCollisionEnemyWeaponBlock();
 	void HandleCollisionWeaponPlayer();
 	void HanldeEnemyWeaponMoves();
+	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
-	void HandleEnemyMoves();
+	//void HandleEnemyMoves();
 	void HandleEnemiesSwitching();
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
-	void HandleCollisionWeaponTentacleEnemy();
 	void HandleGameOver();
 	void DisplayGameOver();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	void SpawnEntities();
 
 
 private:
@@ -55,10 +56,10 @@ private:
 	int _power = 0;
 	sf::Text	_ScoreText;
 	int _score = 0;
-	int posSpawnUp[2] ;
-	int posSpawnRight[2] ;
-	int posSpawnDown[2] ;
-	int posSpawnLeft[2] ;
+	int posSpawnUp[2];
+	int posSpawnRight[2];
+	int posSpawnDown[2];
+	int posSpawnLeft[2];
 	int typeEnemy;
 	int isGenerated;
 	int posGenerate;
