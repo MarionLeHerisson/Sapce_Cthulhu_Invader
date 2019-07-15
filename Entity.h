@@ -26,6 +26,8 @@ public:
 	EntityType m_type;
 	std::string movingDirection;
 	bool m_enabled = true;
+	bool isTentacle = false;
+	std::string positionSpawn;
 
 	// Enemy only
 	bool m_bLeftToRight = true;

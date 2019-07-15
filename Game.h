@@ -23,10 +23,9 @@ private:
 
 	void updateStatistics(sf::Time elapsedTime);
 	void HandleTexts();
-	void HandleCollisionEnemyWeaponBlock();
+	void HandleCollisionPlayerWeaponEnemy();
 	void HandleCollisionWeaponPlayer();
 	void HanldeEnemyWeaponMoves();
-	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
 	void HandleEnemyMoves();
@@ -34,10 +33,10 @@ private:
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
+	void HandleCollisionWeaponTentacleEnemy();
 	void HandleGameOver();
 	void DisplayGameOver();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
-	void SpawnEntities();
 
 
 private:
