@@ -728,7 +728,6 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					continue;
 				}
-				std::cout << "spawn : " << enemy->positionSpawn << std::endl;
 
 				sf::FloatRect boundWeapon;
 				boundWeapon = weapon->m_sprite.getGlobalBounds();
@@ -992,6 +991,7 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		sw->m_sprite.setPosition(posX, posY);
 		sw->m_type = EntityType::weapon;
 		sw->m_size = _TextureBubbleGreen.getSize();
+		sw->isTentacle = true;
 		EntityManager::m_Entities.push_back(sw);
 
 		//_IsPlayerTentacleFired = true;
