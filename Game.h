@@ -40,9 +40,12 @@ private:
 	void SpawnEntities();
 
 
+
 private:
 	static const float		PlayerSpeed;
 	static const sf::Time	TimePerFrame;
+
+
 
 	sf::RenderWindow		mWindow;
 	sf::Sprite	mPlayer;

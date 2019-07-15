@@ -33,5 +33,6 @@ public:
 	bool m_bLeftToRight = true;
 	int m_times = 0;
 	std::string getDirection();
+	std::string getSpawn();
 };
 

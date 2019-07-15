@@ -26,8 +26,8 @@ Game::Game()
 {
 	mWindow.setFramerateLimit(160);
 
-	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png", sf::IntRect(0, 0, 32, 32));
-	_TextureBaby.loadFromFile("Media/Assets/baby.png", sf::IntRect(0, 0, 32, 32));
+	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
+	_TextureBaby.loadFromFile("Media/Assets/baby.png");
 	_TextureBubbleGreen.loadFromFile("Media/Assets/bubble-green.png");
 	_TextureBubbleRed.loadFromFile("Media/Assets/bubble-red.png");
 	_TextureLookingUp.loadFromFile("Media/Assets/cthulhu.png", sf::IntRect(0, 192, 64, 256));
@@ -159,7 +159,7 @@ void Game::processEvents()
 			break;
 		}
 	}
-	
+
 }
 
 void Game::update(sf::Time elapsedTime)
@@ -241,7 +241,6 @@ void Game::updateStatistics(sf::Time elapsedTime)
 		HandleCollisionBlockEnemy();
 		HanldeWeaponMoves();
 		HanldeEnemyWeaponMoves();
-		//HandleEnemyMoves();
 		HandleEnemyWeaponFiring();
 		//function to implements
 		HandleEnemiesSwitching();//If enemies not here -> put an enemy / if already here : if here for more than random turns -> swich enemy type
@@ -775,31 +774,73 @@ void Game::HandleCollisionWeaponEnemy()
 
 		for (std::shared_ptr<Entity> enemy : EntityManager::m_Entities)
 		{
-			if (enemy->m_type != EntityType::enemy)
+			if (enemy->m_type == EntityType::enemy)
 			{
-				continue;
+				if (enemy->m_enabled == false)
+				{
+					continue;
+				}
+
+				sf::FloatRect boundWeapon;
+				boundWeapon = weapon->m_sprite.getGlobalBounds();
+
+				sf::FloatRect boundEnemy;
+				boundEnemy = enemy->m_sprite.getGlobalBounds();
+
+				if (boundWeapon.intersects(boundEnemy) == true)
+				{
+					enemy->m_enabled = false;
+					weapon->m_enabled = false;
+					_IsPlayerWeaponFired = false;
+					_IsPlayerTentacleFired = false;
+					_score += 10;
+					//break;
+					goto end;
+				}
 			}
+			else if (enemy->m_type == EntityType::baby) {
+				if (enemy->m_enabled == false)
+				{
+					continue;
+				}
+				sf::FloatRect boundWeapon;
+				boundWeapon = weapon->m_sprite.getGlobalBounds();
 
-			if (enemy->m_enabled == false)
-			{
-				continue;
+				sf::FloatRect boundEnemy;
+				boundEnemy = enemy->m_sprite.getGlobalBounds();
+
+				if (boundWeapon.intersects(boundEnemy) == true)
+				{
+					enemy->m_enabled = false;
+					weapon->m_enabled = false;
+					_IsPlayerWeaponFired = false;
+					_IsPlayerTentacleFired = false;
+					_power += 10;
+					//break;
+					goto end;
+				}
 			}
+			else if (enemy->m_type == EntityType::fish) {
+				if (enemy->m_enabled == false)
+				{
+					continue;
+				}
+				sf::FloatRect boundWeapon;
+				boundWeapon = weapon->m_sprite.getGlobalBounds();
 
-			sf::FloatRect boundWeapon;
-			boundWeapon = weapon->m_sprite.getGlobalBounds();
+				sf::FloatRect boundEnemy;
+				boundEnemy = enemy->m_sprite.getGlobalBounds();
 
-			sf::FloatRect boundEnemy;
-			boundEnemy = enemy->m_sprite.getGlobalBounds();
-
-			if (boundWeapon.intersects(boundEnemy) == true)
-			{
-				enemy->m_enabled = false;
-				weapon->m_enabled = false;
-				_IsPlayerWeaponFired = false;
-				_IsPlayerTentacleFired = false;
-				_score += 10;
-				//break;
-				goto end;
+				if (boundWeapon.intersects(boundEnemy) == true)
+				{
+					enemy->m_enabled = false;
+					weapon->m_enabled = false;
+					_IsPlayerWeaponFired = false;
+					_IsPlayerTentacleFired = false;
+					_lives += 1;
+					//break;
+					goto end;
+				}
 			}
 		}
 	}
@@ -960,7 +1001,7 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 void Game::SpawnEntities()
 {
-	std::cout << "la direction est " << mdirectionLooking << std::endl;
+	/*std::cout << "la direction est " << mdirectionLooking << std::endl;
 	typeEnemy = rand() % 3;
 
 	if (!mRightIsHere) {
@@ -1054,7 +1095,7 @@ void Game::SpawnEntities()
 		se->m_enabled = true;
 		EntityManager::m_Entities.push_back(se);
 		mDownIsHere = true;
-	}
+	}*/
 
 
 }
