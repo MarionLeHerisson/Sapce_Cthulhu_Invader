@@ -1,10 +1,6 @@
 ## Soutenance de Projet de C++
 
-Marion Hurteau
-
-et
-
-Robin Saint Georges
+Marion Hurteau et Robin Saint Georges
 
 élèves en 4jAL présentent
 
@@ -47,6 +43,5 @@ essayant de le manger. Ce jeu est basé sur la vitesse de réaction et sur la pr
 
 ## Démonstration
 
-[![Vidéo de démonstartion](https://drive.google.com/file/d/1WJZstEIApRgZiMBZ8p2cQOq6uM_ixyOR/view)](https://drive.google.com/file/d/1WJZstEIApRgZiMBZ8p2cQOq6uM_ixyOR/view "Démonstartion vidéo")
 https://drive.google.com/file/d/1WJZstEIApRgZiMBZ8p2cQOq6uM_ixyOR/view
 
