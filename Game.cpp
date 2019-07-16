@@ -25,7 +25,18 @@ Game::Game()
 	, mdirectionLooking("up")
 {
 	mWindow.setFramerateLimit(160);
+	sf::Texture texture;
+	if (!texture.loadFromFile("Media/Assets/background.jpg"))
+	{
 
+	}
+	sf::RectangleShape rectangle(sf::Vector2f(150, 80));
+	sf::Sprite background(texture);
+	mWindow.draw(background);
+	mWindow.draw(rectangle);
+	mWindow.display();
+
+	_background.loadFromFile("Media/Assets/background.jpg");
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
 	_TextureBaby.loadFromFile("Media/Assets/baby.png");
 	_TextureBubbleGreen.loadFromFile("Media/Assets/bubble-green.png");
@@ -65,6 +76,8 @@ void Game::InitSprites()
 	_IsEnemyWeaponFired = false;
 	_IsPlayerWeaponFired = false;
 	_IsPlayerTentacleFired = false;
+
+
 
 	//
 	// Player
@@ -527,7 +540,6 @@ void Game::HandleEnemiesSwitching()
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setPosition(415, 50);
 		r = rand() % 3;
-		std::cout << "UP " << r << std::endl;
 		switch (r) {
 		case 0:
 			sw->m_type = EntityType::enemy;
@@ -553,7 +565,6 @@ void Game::HandleEnemiesSwitching()
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setPosition(415, 500);
 		r = rand() % 3;
-		std::cout << "down " << r << std::endl;
 		switch (r) {
 		case 0:
 			sw->m_type = EntityType::enemy;
@@ -579,7 +590,6 @@ void Game::HandleEnemiesSwitching()
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setPosition(20, 250);
 		r = rand() % 3;
-		std::cout << "left " << r << std::endl;
 		switch (r) {
 		case 0:
 			sw->m_type = EntityType::enemy;
@@ -605,10 +615,9 @@ void Game::HandleEnemiesSwitching()
 		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 		sw->m_sprite.setPosition(750, 250);
 		r = rand() % 3;
-		std::cout << "right " << r << std::endl;
 		switch (r) {
 		case 0:
-			sw->m_type = EntityType::wizard;
+			sw->m_type = EntityType::enemy;
 			sw->m_sprite.setTexture(_TextureEnemy);
 			sw->m_size = _TextureEnemy.getSize();
 			break;
@@ -657,6 +666,7 @@ void Game::HanldeWeaponMoves()
 			if (y >= 600)
 			{
 				entity->m_enabled = false;
+				entity->~Entity();
 				_IsPlayerWeaponFired = false;
 				_IsPlayerTentacleFired = false;
 			}
@@ -669,6 +679,7 @@ void Game::HanldeWeaponMoves()
 			if (x > 1200)
 			{
 				entity->m_enabled = false;
+				entity->~Entity();
 				_IsPlayerWeaponFired = false;
 				_IsPlayerTentacleFired = false;
 			}
@@ -681,6 +692,7 @@ void Game::HanldeWeaponMoves()
 			if (x <= 0)
 			{
 				entity->m_enabled = false;
+				entity->~Entity();
 				_IsPlayerWeaponFired = false;
 				_IsPlayerTentacleFired = false;
 			}
@@ -693,6 +705,7 @@ void Game::HanldeWeaponMoves()
 			if (y <= 0)
 			{
 				entity->m_enabled = false;
+				entity->~Entity();
 				_IsPlayerWeaponFired = false;
 				_IsPlayerTentacleFired = false;
 			}
@@ -786,6 +799,8 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					enemy->m_enabled = false;
 					weapon->m_enabled = false;
+					enemy->~Entity();
+					weapon->~Entity();
 					switch (enemy->positionSpawn)
 					{
 					case 1:
@@ -824,6 +839,8 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					enemy->m_enabled = false;
 					weapon->m_enabled = false;
+					enemy->~Entity();
+					weapon->~Entity();
 					switch (enemy->positionSpawn)
 					{
 					case 1:
@@ -865,6 +882,8 @@ void Game::HandleCollisionWeaponEnemy()
 				{
 					enemy->m_enabled = false;
 					weapon->m_enabled = false;
+					enemy->~Entity();
+					weapon->~Entity();
 					switch (enemy->positionSpawn)
 					{
 					case 1:
@@ -883,7 +902,12 @@ void Game::HandleCollisionWeaponEnemy()
 					_IsPlayerWeaponFired = false;
 					_IsPlayerTentacleFired = false;
 					if (weapon->isTentacle) {
-						_lives += 1;
+						if(_power>50){
+							_lives += 2;
+						}
+						else {
+							_lives += 1;
+						}
 					}
 					//break;
 					goto end;
@@ -1051,10 +1075,6 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 
 void Game::SpawnEntities()
 {
-	//std::cout << "right " << mRightIsHere << std::endl;
-	//std::cout << "left " << mLeftIsHere << std::endl;
-	//std::cout << "up " << mUpIsHere << std::endl;
-	//std::cout << "down " << mDownIsHere << std::endl;
 	typeEnemy = rand() % 3;
 
 	if (!mRightIsHere) {

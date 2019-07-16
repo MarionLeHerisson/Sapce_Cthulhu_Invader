@@ -100,6 +100,7 @@ private:
 	sf::Texture	_TextureBubbleRed;
 	sf::Texture	_TextureFish;
 	sf::Texture _TextureBaby;
+	sf::Texture _background;
 
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];
