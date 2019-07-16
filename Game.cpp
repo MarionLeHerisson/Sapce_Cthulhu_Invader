@@ -342,7 +342,13 @@ void Game::HandleCollisionWeaponPlayer()
 		{
 			weapon->m_enabled = false;
 			_IsEnemyWeaponFired = false;
-			_lives--;
+			if (_score > 150) {
+				_lives -= 3;
+			}
+			else {
+				_lives--;
+			}
+			
 			goto end;
 		}
 	}
