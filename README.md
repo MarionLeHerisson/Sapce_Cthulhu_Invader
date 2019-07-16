@@ -39,7 +39,7 @@ essayant de le manger. Ce jeu est basé sur la vitesse de réaction et sur la pr
 |-----------------|-----------------|
 | -Le jeu est simple et rapide à prendre en main | -La gestion des textures dans le shared pointer Entity n’est pas au point, les entités s’accumulent et finissent rapidement par faire laguer le jeu. |
 | -Le jeu ne plante jamais | - Il faut relancer le programme afin de faire une nouvelle partie |
-|Gestion des entities à l'aide d'un entityManager||
+|-Gestion des entities à l'aide d'un entityManager||
 
 
 ## Démonstration
