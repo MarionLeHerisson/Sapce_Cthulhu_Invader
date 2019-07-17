@@ -7,7 +7,7 @@ const float Game::PlayerSpeed = 100.f;
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game()
-	: mWindow(sf::VideoMode(840, 600), "Space Invaders 1978", sf::Style::Close)
+	: mWindow(sf::VideoMode(840, 600), "Space Cthulhu Invaders", sf::Style::Close)
 	//, mTexture()
 	, mPlayer()
 	, mFont()
@@ -25,16 +25,7 @@ Game::Game()
 	, mdirectionLooking("up")
 {
 	mWindow.setFramerateLimit(160);
-	sf::Texture texture;
-	if (!texture.loadFromFile("Media/Assets/background.jpg"))
-	{
 
-	}
-	sf::RectangleShape rectangle(sf::Vector2f(150, 80));
-	sf::Sprite background(texture);
-	mWindow.draw(background);
-	mWindow.draw(rectangle);
-	mWindow.display();
 
 	_background.loadFromFile("Media/Assets/background.jpg");
 	_TextureFish.loadFromFile("Media/Assets/fish-angler-Sheet.png");
@@ -342,7 +333,7 @@ void Game::HandleCollisionWeaponPlayer()
 		{
 			weapon->m_enabled = false;
 			_IsEnemyWeaponFired = false;
-			if (_score > 150) {
+			if (_score > 100) {
 				_lives -= 3;
 			}
 			else {
