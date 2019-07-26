@@ -942,9 +942,9 @@ void Game::DisplayGameOver()
 		mText.setFillColor(sf::Color::Green);
 		mText.setFont(mFont);
 		mText.setPosition(200.f, 200.f);
-		mText.setCharacterSize(80);
+		mText.setCharacterSize(30);
 
-		mText.setString("GAME OVER");
+		mText.setString("GAME OVER  (-R for a new chance-)");
 
 		_IsGameOver = true;
 	}
@@ -954,10 +954,26 @@ void Game::DisplayGameOver()
 	}
 }
 
+void Game::GameAgain()
+{
+	mText.setString("");
+	_lives = 5;
+	_score = 0;
+	_power = 0;
+
+	InitSprites();	
+	
+}
+
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
+	if (_IsGameOver) {
+		if (key == sf::Keyboard::R) {
+			GameAgain();
+		}
+	}
 
-	if (key == sf::Keyboard::Up) {
+	else if (key == sf::Keyboard::Up) {
 		mIsLookingUp = isPressed;
 		mdirectionLooking = "up";
 	}
@@ -975,98 +991,102 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		;
 	}
 
-	if (key == sf::Keyboard::Space)
-	{
-		if (isPressed == false)
+	if (!_IsGameOver) {
+
+	
+		if (key == sf::Keyboard::Space)
 		{
-			return;
+			if (isPressed == false)
+			{
+				return;
+			}
+
+			if (_IsPlayerWeaponFired == true)
+			{
+				return;
+			}
+
+			std::shared_ptr<Entity> sw = std::make_shared<Entity>();
+			int posX = 0;
+			int posY = 0;
+
+			if (mdirectionLooking == "down") {
+				sw->movingDirection = "down";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
+			}
+			else if (mdirectionLooking == "left") {
+				sw->movingDirection = "left";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			}
+			else if (mdirectionLooking == "right") {
+				sw->movingDirection = "right";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			}
+			else if (mdirectionLooking == "up") {
+				sw->movingDirection = "up";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+			}
+
+			sw->m_sprite.setTexture(_TextureBubbleRed);
+			sw->m_sprite.setPosition(posX, posY);
+			sw->m_type = EntityType::weapon;
+			sw->m_size = _TextureBubbleRed.getSize();
+			EntityManager::m_Entities.push_back(sw);
+
+			//_IsPlayerWeaponFired = true;
 		}
 
-		if (_IsPlayerWeaponFired == true)
+		if (key == sf::Keyboard::E)
 		{
-			return;
-		}
+			if (isPressed == false)
+			{
+				return;
+			}
 
-		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
-		int posX = 0;
-		int posY = 0;
+			if (_IsPlayerTentacleFired == true)
+			{
+				return;
+			}
 
-		if (mdirectionLooking == "down") {
-			sw->movingDirection = "down";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
-		}
-		else if (mdirectionLooking == "left") {
-			sw->movingDirection = "left";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
-		}
-		else if (mdirectionLooking == "right") {
-			sw->movingDirection = "right";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
-		}
-		else if (mdirectionLooking == "up") {
-			sw->movingDirection = "up";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
-		}
+			int posX = 0;
+			int posY = 0;
 
-		sw->m_sprite.setTexture(_TextureBubbleRed);
-		sw->m_sprite.setPosition(posX, posY);
-		sw->m_type = EntityType::weapon;
-		sw->m_size = _TextureBubbleRed.getSize();
-		EntityManager::m_Entities.push_back(sw);
+			std::shared_ptr<Entity> sw = std::make_shared<Entity>();
 
-		//_IsPlayerWeaponFired = true;
-	}
+			if (mdirectionLooking == "down") {
+				sw->movingDirection = "down";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
+			}
+			else if (mdirectionLooking == "left") {
+				sw->movingDirection = "left";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			}
+			else if (mdirectionLooking == "right") {
+				sw->movingDirection = "right";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
+			}
+			else if (mdirectionLooking == "up") {
+				sw->movingDirection = "up";
+				posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
+				posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
+			}
 
-	if (key == sf::Keyboard::E)
-	{
-		if (isPressed == false)
-		{
-			return;
+			sw->m_sprite.setTexture(_TextureBubbleGreen);
+			sw->m_sprite.setPosition(posX, posY);
+			sw->m_type = EntityType::weapon;
+			sw->m_size = _TextureBubbleGreen.getSize();
+			sw->isTentacle = true;
+			EntityManager::m_Entities.push_back(sw);
+
+			//_IsPlayerTentacleFired = true;
 		}
-
-		if (_IsPlayerTentacleFired == true)
-		{
-			return;
-		}
-
-		int posX = 0;
-		int posY = 0;
-
-		std::shared_ptr<Entity> sw = std::make_shared<Entity>();
-
-		if (mdirectionLooking == "down") {
-			sw->movingDirection = "down";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y;
-		}
-		else if (mdirectionLooking == "left") {
-			sw->movingDirection = "left";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
-		}
-		else if (mdirectionLooking == "right") {
-			sw->movingDirection = "right";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().y / 2;
-		}
-		else if (mdirectionLooking == "up") {
-			sw->movingDirection = "up";
-			posX = EntityManager::GetPlayer()->m_sprite.getPosition().x + EntityManager::GetPlayer()->m_sprite.getTexture()->getSize().x / 2;
-			posY = EntityManager::GetPlayer()->m_sprite.getPosition().y;
-		}
-
-		sw->m_sprite.setTexture(_TextureBubbleGreen);
-		sw->m_sprite.setPosition(posX, posY);
-		sw->m_type = EntityType::weapon;
-		sw->m_size = _TextureBubbleGreen.getSize();
-		sw->isTentacle = true;
-		EntityManager::m_Entities.push_back(sw);
-
-		//_IsPlayerTentacleFired = true;
 	}
 }
 

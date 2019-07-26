@@ -29,13 +29,13 @@ private:
 	void HandleEntitiesApparing();
 	void HandleEnemyWeaponFiring();
 	void HandleCollisionBlockEnemy();
-	//void HandleEnemyMoves();
 	void HandleEnemiesSwitching();
 	void HanldeWeaponMoves();
 	void HandleCollisionWeaponBlock();
 	void HandleCollisionWeaponEnemy();
 	void HandleGameOver();
 	void DisplayGameOver();
+	void GameAgain();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 	void SpawnEntities();
 
@@ -104,8 +104,6 @@ private:
 
 	sf::Texture	_TextureEnemy;
 	sf::Sprite	_Enemy[4];
-	sf::Texture	_TextureBlock;
-	sf::Sprite	_Block[BLOCK_COUNT];
 	sf::Texture	_TextureWeapon;
 	sf::Texture	_TextureWeaponEnemy;
 	sf::Texture	_TextureWeaponEnemyMaster;
